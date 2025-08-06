@@ -142,6 +142,9 @@ do
     PASSWD_OK=$?
 done
 
+echo ""
+echo "Done. To change it, simply run 'passwd'."
+echo ""
 
 if ! [[ -d "$HOME/termux-utils" ]];
 then
