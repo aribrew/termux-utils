@@ -1,0 +1,81 @@
+#!/bin/bash
+
+
+function abort
+{
+    REASON=$1
+
+    if ! [ "$REASON" == "" ];
+    then
+        echo "$REASON"
+    fi
+
+    echo ""
+
+    exit 1
+}
+
+
+function usage
+{
+    echo "Usage: stop_proot <proot name>"
+    echo "'Turns off' the given proot."
+    echo ""
+}
+
+
+if [ "$1" == "" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ];
+then
+    usage
+    abort
+fi
+
+
+if [ "$TERMUX_VERSION" == "" ];
+then
+    abort "This script is intended for Termux only."
+fi
+
+
+
+
+PROOT=$1
+
+if [ "$PROOT" == "" ];
+then
+    usage
+    abort
+fi
+
+
+PROOT_PATH="${PREFIX}/var/lib/proot-distro/installed-rootfs/${PROOT}"
+
+
+if ! [ -d "$PROOT_PATH" ];
+then
+    abort "The proot '$PROOT' does not exist."
+fi
+
+
+is_proot_running $PROOT
+
+if ! [ "$?" == "0" ];
+then
+    abort "The proot '${PROOT}' is already off."
+fi
+
+
+echo "Trying to stop proot ..."
+
+pexec_admin $PROOT stop_sshd
+
+if ! [ "$?" == "0" ];
+then
+    abort "Command line returned non-zero. Something failed."
+fi
+
+
+echo "Proot '${PROOT}' should be closed now."
+echo ""
+
+

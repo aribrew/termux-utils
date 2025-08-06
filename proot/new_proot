@@ -1,0 +1,192 @@
+#!/bin/bash
+
+source bash_helpers
+
+
+function usage
+{
+    echo "Installs a new proot-distro."
+    echo ""
+    echo "Export these variables to configure it: "
+    echo "- PROOT_DISTRO: Distro to be installed (Debian stable by default)."
+    echo "- PROOT_ARCH: The distro architecture (Host's one by default)."
+    echo "- PROOT_NAME: The proot name. It is 'debian' by default."
+    echo "- PROOT_USER: Adds this user after installation. Puser by default."
+    echo ""
+}
+
+
+SCRIPT_PATH=$(realpath $(dirname $0))
+
+
+if [[ "$1" == "-h" ]] || [[ "$1" == "--h" ]];
+then
+    usage
+    abort
+fi
+
+
+
+
+if [[ "$TERMUX_VERSION" == "" ]];
+then
+    abort "This script is intended for Termux only."
+fi
+
+
+if ! [[ -f "$PREFIX/bin/proot-distro" ]];
+then
+    echo "Installing proot-distro ..."
+    echo "---------------------------"
+
+    pkg install -y proot-distro
+
+    if ! [ "$?" == "0" ];
+    then
+        echo ""
+        abort "Failed!"
+    fi
+fi
+
+
+if [[ "$PROOT_DISTRO" == "" ]];
+then
+    PROOT_DISTRO="debian"
+fi
+
+if [[ "$PROOT_NAME" == "" ]];
+then
+    PROOT_NAME="$PROOT_DISTRO"
+fi
+
+if [[ "$PROOT_USER" == "" ]];
+then
+    PROOT_USER="puser"
+fi
+
+if ! [[ "$PROOT_ARCH" == "" ]];
+then
+    export DISTRO_ARCH="$PROOT_ARCH"
+
+    if ! [[ -f "$PREFIX/bin/qemu-user-$PROOT_ARCH" ]];
+    then
+        echo "Installing ${PROOT_ARCH} architecture support ..."
+        echo "-------------------------------------------------"
+
+        pkg install -y qemu-user-$PROOT_ARCH
+
+        if ! [[ "$?" == "0" ]];
+        then
+            abort "Failed installing 'qemu-user-$PROOT_ARCH' package."
+        fi
+    fi
+fi
+
+
+if ! [[ -f "$HOME/.proots_env" ]];
+then
+    cp "$SCRIPT_PATH/.proots_env" $HOME/
+    source "$HOME/.proots_env"
+fi
+
+
+PROOT_PATH="$PROOTS/$PROOT_NAME"
+
+if [[ -d "$PROOT_PATH" ]];
+then
+    abort "A proot named '${PROOT_NAME}' already exists in ${PROOT_PATH}."
+fi
+
+
+PROOT_INSTALL_OPTS=""
+
+if ! [[ "$PROOT_NAME" == "$PROOT_DISTRO" ]];
+then
+    PROOT_INSTALL_OPTS+="--override-alias $PROOT_NAME "
+fi
+
+PROOT_INSTALL_OPTS+="${PROOT_DISTRO} "
+
+
+proot-distro install $PROOT_INSTALL_OPTS
+
+if ! [[ "$?" == "0" ]];
+then
+    abort "Proot failed installing."
+fi
+
+
+echo ""
+echo "Updating proot ..."
+echo ""
+
+proot-distro login ${PROOT_NAME} -- apt update && apt upgrade -y
+
+
+echo ""
+echo "Installing SSH in proot for remote access ..."
+echo ""
+
+proot-distro login ${PROOT_NAME} -- apt install -y openssh-server
+
+
+proot-distro login ${PROOT_NAME} -- \
+                 useradd --create-home \
+                         --shell /bin/bash $PROOT_USER
+
+if [[ "$?" == "0" ]];
+then
+    echo ""
+    echo "User $PROOT_USER created."
+    echo ""
+fi
+
+
+cp $SCRIPT_PATH/proot_scripts/* "$PROOT_PATH/usr/bin/"
+
+
+if ! [[ -f "$HOME/.${PROOT_NAME}_proot_env" ]];
+then
+    echo "export PROOT_NAME=\"${PROOT_NAME}\"" >> \
+         "$HOME/.${PROOT_NAME}_proot_env"
+
+    echo "export PROOT_DISTRO=\"${PROOT_DISTRO}\"" >> \
+         "$HOME/.${PROOT_NAME}_proot_env"
+
+    echo "export PROOT_USER=\"${PROOT_USER}\"" >> \
+         "$HOME/.${PROOT_NAME}_proot_env"
+
+    echo "export PROOT_PATH=\"${PROOT_PATH}\"" >> \
+         "$HOME/.${PROOT_NAME}_proot_env"
+fi
+
+
+echo -n "Proot distro $PROOT_NAME ($PROOT_DISTRO) installed in "
+echo "$PROOT_PATH."
+
+echo "The following variables have been added to ~/.${PROOT_NAME}_proot_env: "
+echo "- $PROOT_NAME: The name of the loaded proot."
+echo "- $PROOT_DISTRO: Contains the distro name"
+echo "- $PROOT_USER: Contains the default user"
+echo "- $PROOT_PATH: Contains the proot path"
+echo ""
+echo "You can source it to include these variables in your current"
+echo "environment or add 'source \$HOME/${PROOT_NAME}_proot_env'"
+echo "(without single quotes) to your .bashrc or .environment file"
+echo "to get them added everytime you login."
+echo ""
+echo "Also, the following scripts have been added to your PATH:"
+echo ""
+echo "- pexec_admin:    Executes a command line in the proot as root."
+echo "                  This is the recommended way to install software"
+echo "                  rather than using sudo."
+echo ""
+echo "                  Remember your home dir will be /root"
+echo ""
+echo "- pexec:          Executes a command line as ${PROOT_USER}."
+echo "- penter:         Enter the proot environment as ${PROOT_USER}."
+echo "- penter_admin:   Enter the proot environment as root."
+echo "- new_proot:      Creates a new proot."
+echo "- delete_proot:   Deletes a existing proot."
+echo ""
+

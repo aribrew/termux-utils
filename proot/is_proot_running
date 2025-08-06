@@ -1,0 +1,40 @@
+#!/bin/bash
+
+
+function abort
+{
+    REASON=$1
+
+    if ! [ "$REASON" == "" ];
+    then
+        echo "$REASON"
+    fi
+
+    echo ""
+
+    exit 1
+}
+
+
+function usage
+{
+    echo "Usage: proot_is_running <proot name>"
+    echo ""
+    echo "Checks if the given proot is accesible."
+    echo "We basically check if the proot's screen is running."
+    echo ""
+}
+
+
+if [ "$1" == "" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ];
+then
+    usage
+    abort
+fi
+
+
+
+
+PROOT=$1
+
+screen -list | grep -q "proot_${PROOT}"
