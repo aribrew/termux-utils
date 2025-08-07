@@ -1,0 +1,22 @@
+#!/bin/bash
+
+if ! [[ -v TMP ]];
+then
+    if ! [[ -d $HOME/tmp ]];
+    then
+        mkdir -p $HOME/tmp
+    fi
+
+    export TMP=$HOME/tmp
+fi
+
+
+echo "$PATH" | grep -q ".local/bin"
+
+if ! [[ "$?" == "0" ]];
+then
+    export PATH="$HOME/.local/bin:$PATH"
+fi
+
+
+echo "Loaded Termux environment."
