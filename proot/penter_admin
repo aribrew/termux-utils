@@ -8,9 +8,17 @@ usage()
     echo "Usage: penter_admin [proot name]"
     echo ""
     echo "Enters into the given proot installation as root."
-    echo "If a proot env is loaded, its name will be used."
+    echo "If a proot env is loaded, its config will be used."
     echo ""
 }
+
+
+
+
+if [[ "$TERMUX_VERSION" == "" ]];
+then
+    abort "This script is intended for Termux only."
+fi
 
 
 if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
@@ -20,11 +28,7 @@ then
 fi
 
 
-if [[ "$1 == "" ]] && ! [[ -v PROOT_NAME ]];
-then
-    usage
-    abort
-elif ! [[ "$1" == "" ]];
+if ! [[ -v PROOT_NAME ]];
 then
     PROOT_NAME=$1
 fi

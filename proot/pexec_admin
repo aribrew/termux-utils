@@ -1,33 +1,26 @@
 #!/bin/bash
 
-
-function abort
-{
-    REASON=$1
-
-    if ! [ "$REASON" == "" ];
-    then
-        echo "$REASON"
-    fi
-
-    echo ""
-
-    exit 1
-}
+source bash_helpers.sh
 
 
-function usage
+usage()
 {
     echo "Usage: pexec_admin <proot name> <command line>"
-    echo "       pexec_admin <proot environment file> <command line>"
     echo ""
     echo "Executes the given command line in the given proot installation."
     echo "The command line is executed as root."
     echo ""
-    echo "You can provide them in the options or pass the environment file that"
-    echo "'setup_proot' generates in $HOME."
+    echo "If a proot env is loaded, its config will be used."
     echo ""
 }
+
+
+
+
+if [[ "$TERMUX_VERSION" == "" ]];
+then
+    abort "This script is intended for Termux only."
+fi
 
 
 if [ "$1" == "" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ];
@@ -37,43 +30,26 @@ then
 fi
 
 
-
-
-if [ -f "$1" ];
+if [[ -v PROOT_NAME ]];
 then
-    USING_ENV_FILE="1"
-
-    grep -q "PROOT_NAME" "$1"
-
-    if [ "$?" == "0" ];
-    then
-        source "$1"
-    fi
-
+    CMDLINE=$*
 else
     PROOT_NAME=$1
-fi
-
-if [ "$USING_ENV_FILE" == "1" ];
-then
-    CMDLINE=${@:1}
-else
-    CMDLINE=${@:2}
+    CMDLINE=${@:2]
 fi
 
 
-if [ "$PROOT_NAME" == "" ] || [ "$CMDLINE" == "" ];
-then
-    usage
-    abort
-fi
-
-
-if ! [ "$EXT_SD" == "" ];
+if ! [[ "$EXT_SD" == "" ]];
 then
     SD_BINDING="--bind $EXT_SD:/mnt/extsd"
 fi
 
 
-proot-distro login $PROOT_NAME $SD_BINDING --shared-tmp -- $CMDLINE
+proot_exists $PROOT_NAME
+
+
+if [[ "$?" == "0" ]];
+then
+    proot-distro login $PROOT_NAME $SD_BINDING --shared-tmp -- $CMDLINE
+fi
 

@@ -5,13 +5,20 @@ source bash_helpers.sh
 
 usage()
 {
-    echo "Usage: penter [proot name] <username>"
+    echo "Usage: penter [proot name] [username]"
     echo ""
     echo "Enters into the given proot installation as the given username."
-    echo "If a proot env is loaded, its name will be used, but you must"
-    echo "provide at least the username to login with."
+    echo "If a proot env is loaded, its config will be used."
     echo ""
 }
+
+
+
+
+if [[ "$TERMUX_VERSION" == "" ]];
+then
+    abort "This script is intended for Termux only."
+fi
 
 
 if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
@@ -21,18 +28,10 @@ then
 fi
 
 
-if ! [[ "$1" == "" ]] && ! [[ "$2" == "" ]];
+if ! [[ -v PROOT_NAME ]];
 then
     PROOT_NAME=$1
     PROOT_USER=$2
-
-elif [[ -v PROOT_NAME ]] && ! [[ "$1" == "" ]];
-then
-    PROOT_USER=$1
-
-else
-    usage
-    abort
 fi
 
 
@@ -45,6 +44,7 @@ then
         SD_BINDING="--bind $EXT_SD:/mnt/extsd"
     fi
 
-    proot-distro login $PROOT_NAME --user $PROOT_USER $SD_BINDING --shared-tmp
+    proot-distro login $PROOT_NAME --user $PROOT_USER $SD_BINDING \
+                                   --shared-tmp
 fi
 

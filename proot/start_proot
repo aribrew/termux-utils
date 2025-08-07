@@ -7,7 +7,7 @@ usage()
 {
     echo "Usage: start_proot [proot name]"
     echo ""
-    echo "If no proot name is given, you must load one proot environment file."
+    echo "If a proot env is loaded, its name will be used."
     echo ""
     echo "The pexec commands allows executing command lines in proot"
     echo "but, after execution, the proot session is closed."
@@ -24,6 +24,8 @@ usage()
 }
 
 
+
+
 if [[ "$TERMUX_VERSION" == "" ]];
 then
     abort "This script is intended for Termux only."
@@ -33,29 +35,11 @@ fi
 if ! [[ -v PROOT_NAME ]];
 then
     PROOT_NAME=$1
-fi
-
-
-if [[ "$PROOT_NAME" == "" ]] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
-then
-    usage
-    abort
-fi
-
-
-if ! [[ -v PROOT_PATH ]];
-then
-    PROOT_PATH="$PROOTS/$PROOT_NAME"
-fi
-
-
-if ! [[ -d "$PROOT_PATH" ]];
-then
-    abort "The proot '$PROOT_NAME' does not exist."
-fi
+f
 
 
 is_proot_running $PROOT_NAME
+
 
 if [[ "$?" == "0" ]];
 then
@@ -63,25 +47,33 @@ then
 fi
 
 
-if ! [ "$EXT_SD" == "" ];
+if ! [[ "$EXT_SD" == "" ]];
 then
     SD_BINDING="--bind $EXT_SD:/mnt/extsd"
 fi
 
-echo "Trying to power-on proot '$PROOT_NAME ..."
-screen -dmS proot_${PROOT_NAME} proot-distro login ${PROOT_NAME} \ 
-                                                   ${SD_BINDING} \
-                                                   --shared-tmp \ 
-                                                   --no-kill-on-exit \
-                                                   -- /usr/sbin/sshd -p 8002
 
-is_proot_running $PROOT_NAME
+proot_exists $PROOT_NAME
 
-if [ "$?" == "0" ];
+
+if [[ "$?" == "0" ]];
 then
-    echo "Proot '${PROOT}' should be now available for remote working."
-    echo ""
+    echo "Trying to power-on proot '$PROOT_NAME ..."
+    screen -dmS proot_${PROOT_NAME} proot-distro login \ 
+                                                 $PROOT_NAME $SD_BINDING \
+                                                 --shared-tmp \
+                                                 --no-kill-on-exit \
+                                                 -- /usr/sbin/sshd -p 8002
 
-else
-    abort "Can't find proot's screen. Something failed."
+    is_proot_running $PROOT_NAME
+
+    if [[ "$?" == "0" ]];
+    then
+        echo "Proot '${PROOT}' should be now available for remote working."
+        echo ""
+
+    else
+        abort "Can't find proot's screen. Something failed."
+    fi
 fi
+

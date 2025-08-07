@@ -16,12 +16,12 @@ usage()
 }
 
 
+
+
 if [[ "$TERMUX_VERSION" == "" ]];
 then
     abort "This script is intended for Termux only."
 fi
-
-
 
 
 SCRIPT_PATH=$(realpath $(dirname $0))

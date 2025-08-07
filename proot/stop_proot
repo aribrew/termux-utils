@@ -7,7 +7,7 @@ usage()
 {
     echo "Usage: stop_proot [proot name]"
     echo ""
-    echo "If no proot name is given, you must load a proot environment file."
+    echo "If a proot env is loaded, its name will be used."
     echo ""
 }
 
@@ -33,43 +33,29 @@ then
 fi
 
 
-if [[ "$PROOT_NAME" == "" ]];
+proot_exists $PROOT_NAME
+
+
+if [[ "$?" == "0" ]];
 then
-    usage
-    abort
+    is_proot_running $PROOT_NAME
+
+    if ! [[ "$?" == "0" ]];
+    then
+        abort "The proot '$PROOT_NAME' is already off."
+    fi
+
+
+    echo "Trying to stop proot ..."
+
+    pexec_admin $PROOT_NAME stop_sshd
+
+    if ! [[ "$?" == "0" ]];
+    then
+        abort "Command line returned non-zero. Something failed."
+    fi
+
+    echo "Proot '$PROOT_NAME' should be closed now."
+    echo ""
 fi
-
-
-if ! [[ -v PROOT_PATH ]];
-then
-    PROOT_PATH="$PROOTS/$PROOT_NAME"
-fi
-
-
-if ! [[ -d "$PROOT_PATH" ]];
-then
-    abort "The proot '$PROOT_NAME' does not exist."
-fi
-
-
-is_proot_running $PROOT_NAME
-
-if ! [[ "$?" == "0" ]];
-then
-    abort "The proot '$PROOT_NAME' is already off."
-fi
-
-
-echo "Trying to stop proot ..."
-
-pexec_admin $PROOT_NAME stop_sshd
-
-if ! [[ "$?" == "0" ]];
-then
-    abort "Command line returned non-zero. Something failed."
-fi
-
-
-echo "Proot '$PROOT_NAME' should be closed now."
-echo ""
 

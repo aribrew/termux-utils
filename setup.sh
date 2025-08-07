@@ -123,7 +123,7 @@ fi
 pkg upgrade -y
 
 
-BASIC_PACKAGES="git openssh micro screen"
+BASIC_PACKAGES="termux-services git openssh micro screen"
 
 
 echo ""
@@ -160,6 +160,8 @@ echo ""
 echo "Done. To change it, simply run 'passwd'."
 echo ""
 
+sv-enable openssh
+
 if ! [[ -d "$HOME/termux-utils" ]];
 then
     echo ""
@@ -190,7 +192,9 @@ fi
 
 cp "$SCRIPT_DIR/.termux_env" $HOME/
 
+echo "export PATH=$SCRIPTS:\$PATH" >> "$HOME/.termux_env"
 echo "export PATH=\$HOME/termux-utils/proot:\$PATH" >> "$HOME/.termux_env"
+
 echo "source \$HOME/.termux_env" >> $HOME/. environment
 
 

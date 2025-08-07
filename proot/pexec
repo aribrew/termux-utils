@@ -1,37 +1,26 @@
 #!/bin/bash
 
+source bash_helpers.sh
 
-function abort
+
+usage()
 {
-    REASON=$1
-
-    if ! [ "$REASON" == "" ];
-    then
-        echo "$REASON"
-    fi
-
-    echo ""
-
-    exit 1
-}
-
-
-function usage
-{
-    echo "Usage: pexec <proot name> <usename> <command line>"
-    echo "       pexec <proot environment file> <username> <command line>"
-    echo "       pexec <proot environment file> <command line>"
+    echo "Usage: pexec [proot name] [username] <command line>"
     echo ""
     echo "Executes the given command line in the given proot installation."
     echo "The command line is executed as the given username."
     echo ""
-    echo "You can provide them in the options or pass the environment file that"
-    echo "'setup_proot' generates in $HOME."
-    echo ""
-    echo "If done this way, you can ommit the user name and the default of the"
-    echo "environment file will be used."
+    echo "If a proot env is loaded, its config will be used."
     echo ""
 }
+
+
+
+
+if [[ "$TERMUX_VERSION" == "" ]];
+then
+    abort "This script is intended for Termux only."
+fi
 
 
 if [ "$1" == "" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ];
@@ -41,49 +30,29 @@ then
 fi
 
 
-
-
-if [ -f "$1" ];
+if [[ -v PROOT_NAME ]];
 then
-    USING_ENV_FILE="1"
-
-    grep -q "PROOT_NAME" "$1"
-
-    if [ "$?" == "0" ];
-    then
-        source "$1"
-    fi
-
-    if ! [ "$3" == "" ];
-    then
-        PROOT_USER=$2
-    fi
-
+    CMDLINE=$*
 else
     PROOT_NAME=$1
     PROOT_USER=$2
-fi
 
-if [ "$USING_ENV_FILE" == "1" ];
-then
-    CMDLINE=${@:2}
-else
     CMDLINE=${@:3}
 fi
 
 
-if [ "$PROOT_NAME" == "" ] || [ "$PROOT_USER" == "" ] || [ "$CMDLINE" == "" ];
-then
-    usage
-    abort
-fi
-
-
-if ! [ "$EXT_SD" == "" ];
+if ! [[ "$EXT_SD" == "" ]];
 then
     SD_BINDING="--bind $EXT_SD:/mnt/extsd"
 fi
 
 
-proot-distro login $PROOT_NAME --user $PROOT_USER $SD_BINDING --shared-tmp -- $CMDLINE
+proot_exists $PROOT_NAME
+
+
+if [[ "$?" == "0" ]];
+then
+    proot-distro login $PROOT_NAME --user $PROOT_USER $SD_BINDING \
+                                   --shared-tmp -- $CMDLINE
+fi
 
