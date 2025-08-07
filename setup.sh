@@ -160,18 +160,7 @@ then
 
     if ! [[ "$?" == "0" ]];
     then
-        echo "#!/bin/bash" >> "$HOME/download_termux-utils"
-
-        echo "git clone $TERMUX_SETUP_URL \$HOME/termux-utils" \
-        >> "$HOME/download_termux-utils"
-
-        echo "chmod -R +x \"\$HOME/termux-utils\"" \
-        >> "$HOME/download_termux-utils"
-
-        chmod +x "$HOME/download_termux-utils"
-
-        echo "Something went wrong cloning the repo."
-        echo "You can retry executing '~/download_termux-utils'."
+        abort "Failed. You can run dl_termux-utils.sh to do it manually."
     fi
 fi
 
