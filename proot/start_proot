@@ -3,7 +3,7 @@
 source bash_helpers.sh
 
 
-function usage
+usage()
 {
     echo "Usage: start_proot [proot name]"
     echo ""
@@ -24,7 +24,7 @@ function usage
 }
 
 
-if [ "$TERMUX_VERSION" == "" ];
+if [[ "$TERMUX_VERSION" == "" ]];
 then
     abort "This script is intended for Termux only."
 fi

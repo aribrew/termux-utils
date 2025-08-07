@@ -1,69 +1,50 @@
 #!/bin/bash
 
+source bash_helpers.sh
 
-function abort
+
+usage()
 {
-    REASON=$1
-
-    if ! [ "$REASON" == "" ];
-    then
-        echo "$REASON"
-    fi
-
-    echo ""
-
-    exit 1
-}
-
-
-function usage
-{
-    echo "Usage: penter <proot name> <username>"
-    echo "       penter <proot environment file>"
+    echo "Usage: penter [proot name] <username>"
     echo ""
     echo "Enters into the given proot installation as the given username."
-    echo "You can provide them in the options or pass the environment file that"
-    echo "'setup_proot' generates in $HOME."
+    echo "If a proot env is loaded, its name will be used, but you must"
+    echo "provide at least the username to login with."
     echo ""
 }
 
 
-if [ "$1" == "" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ];
+if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
 then
     usage
     abort
 fi
 
 
-
-
-if [ -f "$1" ];
+if ! [[ "$1" == "" ]] && ! [[ "$2" == "" ]];
 then
-    grep -q "PROOT_NAME" "$1"
-
-    if [ "$?" == "0" ];
-    then
-        source "$1"
-    fi
-
-else
     PROOT_NAME=$1
     PROOT_USER=$2
-fi
 
-
-if [ "$PROOT_NAME" == "" ] || [ "$PROOT_USER" == "" ];
+elif [[ -v PROOT_NAME ]] && ! [[ "$1" == "" ]];
 then
+    PROOT_USER=$1
+
+else
     usage
     abort
 fi
 
 
-if ! [ "$EXT_SD" == "" ];
+proot_exists $PROOT_NAME
+
+if [[ "$?" == "0" ]];
 then
-    SD_BINDING="--bind $EXT_SD:/mnt/extsd"
+    if ! [[ "$EXT_SD" == "" ]];
+    then
+        SD_BINDING="--bind $EXT_SD:/mnt/extsd"
+    fi
+
+    proot-distro login $PROOT_NAME --user $PROOT_USER $SD_BINDING --shared-tmp
 fi
-
-
-proot-distro login $PROOT_NAME --user $PROOT_USER $SD_BINDING --shared-tmp
 

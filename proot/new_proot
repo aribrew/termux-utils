@@ -70,7 +70,7 @@ then
 
     if ! [[ -f "$PREFIX/bin/qemu-user-$PROOT_ARCH" ]];
     then
-        echo "Installing ${PROOT_ARCH} architecture support ..."
+        echo "Installing $PROOT_ARCH architecture support ..."
         echo "-------------------------------------------------"
 
         pkg install -y qemu-user-$PROOT_ARCH
@@ -94,7 +94,7 @@ PROOT_PATH="$PROOTS/$PROOT_NAME"
 
 if [[ -d "$PROOT_PATH" ]];
 then
-    abort "A proot named '${PROOT_NAME}' already exists in ${PROOT_PATH}."
+    abort "A proot named '$PROOT_NAME' already exists in $PROOT_PATH."
 fi
 
 
@@ -105,7 +105,7 @@ then
     PROOT_INSTALL_OPTS+="--override-alias $PROOT_NAME "
 fi
 
-PROOT_INSTALL_OPTS+="${PROOT_DISTRO} "
+PROOT_INSTALL_OPTS+="$PROOT_DISTRO "
 
 
 proot-distro install $PROOT_INSTALL_OPTS
@@ -120,19 +120,37 @@ echo ""
 echo "Updating proot ..."
 echo ""
 
-proot-distro login ${PROOT_NAME} -- apt update && apt upgrade -y
+proot-distro login $PROOT_NAME -- apt update && apt upgrade -y
 
 
 echo ""
 echo "Installing SSH in proot for remote access ..."
+echo "---------------------------------------------"
+
+proot-distro login $PROOT_NAME -- apt install -y openssh-server
+
+
+echo ""
+echo "Setting the password for the root user"
 echo ""
 
-proot-distro login ${PROOT_NAME} -- apt install -y openssh-server
+proot-distro login $PROOT_NAME -- passwd
 
 
-proot-distro login ${PROOT_NAME} -- \
+echo ""
+echo "Creating the '$PROOT_USER' user"
+echo ""
+
+proot-distro login $PROOT_NAME -- \
                  useradd --create-home \
                          --shell /bin/bash $PROOT_USER
+
+echo ""
+echo "Setting the password for the '$PROOT_USER' user"
+echo ""
+
+proot-distro login $PROOT_NAME -- passwd $PROOT_USER
+
 
 if [[ "$?" == "0" ]];
 then

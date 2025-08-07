@@ -1,0 +1,34 @@
+#!/bin/bash
+
+source bash_helpers.sh
+
+
+usage()
+{
+    echo "Usage: proot_exists <proot name>"
+    echo ""
+}
+
+
+if [[ "$TERMUX_VERSION" == "" ]];
+then
+    abort "This script is intended for Termux only."
+fi
+
+
+PROOT_NAME=$1
+
+
+if [[ "$PROOT_NAME" == "" ]] || ! [[ -d "$PROOTS/$PROOT_NAME" ]];
+then
+    echo "No proot named '$PROOT_NAME' exists."
+    echo ""
+
+    return 1
+    
+else
+    echo "The proot '$PROOT_NAME' exists."
+    echo ""
+
+    return 0
+fi
