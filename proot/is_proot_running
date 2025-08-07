@@ -1,19 +1,6 @@
 #!/bin/bash
 
-
-abort()
-{
-    REASON=$1
-
-    if ! [ "$REASON" == "" ];
-    then
-        echo "$REASON"
-    fi
-
-    echo ""
-
-    exit 1
-}
+source bash_helpers.sh
 
 
 is_proot_running()

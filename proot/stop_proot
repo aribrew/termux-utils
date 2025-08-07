@@ -1,81 +1,75 @@
 #!/bin/bash
 
+source bash_helpers.sh
 
-function abort
+
+usage()
 {
-    REASON=$1
-
-    if ! [ "$REASON" == "" ];
-    then
-        echo "$REASON"
-    fi
-
+    echo "Usage: stop_proot [proot name]"
     echo ""
-
-    exit 1
-}
-
-
-function usage
-{
-    echo "Usage: stop_proot <proot name>"
-    echo "'Turns off' the given proot."
+    echo "If no proot name is given, you must load a proot environment file."
     echo ""
 }
 
 
-if [ "$1" == "" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ];
-then
-    usage
-    abort
-fi
 
 
-if [ "$TERMUX_VERSION" == "" ];
+if [[ "$TERMUX_VERSION" == "" ]];
 then
     abort "This script is intended for Termux only."
 fi
 
 
-
-
-PROOT=$1
-
-if [ "$PROOT" == "" ];
+if [[ "$1" == "" ]] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
 then
     usage
     abort
 fi
 
 
-PROOT_PATH="${PREFIX}/var/lib/proot-distro/installed-rootfs/${PROOT}"
-
-
-if ! [ -d "$PROOT_PATH" ];
+if ! [[ -v PROOT_NAME ]];
 then
-    abort "The proot '$PROOT' does not exist."
+    PROOT_NAME=$1
 fi
 
 
-is_proot_running $PROOT
-
-if ! [ "$?" == "0" ];
+if [[ "$PROOT_NAME" == "" ]];
 then
-    abort "The proot '${PROOT}' is already off."
+    usage
+    abort
+fi
+
+
+if ! [[ -v PROOT_PATH ]];
+then
+    PROOT_PATH="$PROOTS/$PROOT_NAME"
+fi
+
+
+if ! [[ -d "$PROOT_PATH" ]];
+then
+    abort "The proot '$PROOT_NAME' does not exist."
+fi
+
+
+is_proot_running $PROOT_NAME
+
+if ! [[ "$?" == "0" ]];
+then
+    abort "The proot '$PROOT_NAME' is already off."
 fi
 
 
 echo "Trying to stop proot ..."
 
-pexec_admin $PROOT stop_sshd
+pexec_admin $PROOT_NAME stop_sshd
 
-if ! [ "$?" == "0" ];
+if ! [[ "$?" == "0" ]];
 then
     abort "Command line returned non-zero. Something failed."
 fi
 
 
-echo "Proot '${PROOT}' should be closed now."
+echo "Proot '$PROOT_NAME' should be closed now."
 echo ""
-
 

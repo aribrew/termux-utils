@@ -1,26 +1,14 @@
 #!/bin/bash
 
-
-function abort
-{
-    REASON=$1
-
-    if ! [ "$REASON" == "" ];
-    then
-        echo "$REASON"
-    fi
-
-    echo ""
-
-    exit 1
-}
+source bash_helpers.sh
 
 
 function usage
 {
-    echo "Usage: start_proot <proot name>"
+    echo "Usage: start_proot [proot name]"
     echo ""
-    echo "'Turns on' the given proot."
+    echo "If no proot name is given, you must load one proot environment file."
+    echo ""
     echo "The pexec commands allows executing command lines in proot"
     echo "but, after execution, the proot session is closed."
     echo ""
@@ -36,44 +24,42 @@ function usage
 }
 
 
-if [ "$1" == "" ] || [ "$1" == "-h" ] || [ "$1" == "--help" ];
-then
-    usage
-    abort
-fi
-
-
 if [ "$TERMUX_VERSION" == "" ];
 then
     abort "This script is intended for Termux only."
 fi
 
 
+if ! [[ -v PROOT_NAME ]];
+then
+    PROOT_NAME=$1
+fi
 
 
-PROOT=$1
-
-if [ "$PROOT" == "" ];
+if [[ "$PROOT_NAME" == "" ]] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
 then
     usage
     abort
 fi
 
 
-PROOT_PATH="${PREFIX}/var/lib/proot-distro/installed-rootfs/${PROOT}"
-
-
-if ! [ -d "$PROOT_PATH" ];
+if ! [[ -v PROOT_PATH ]];
 then
-    abort "The proot '$PROOT' does not exist."
+    PROOT_PATH="$PROOTS/$PROOT_NAME"
 fi
 
 
-is_proot_running $PROOT
-
-if [ "$?" == "0" ];
+if ! [[ -d "$PROOT_PATH" ]];
 then
-    abort "The proot '${PROOT}' is already on."
+    abort "The proot '$PROOT_NAME' does not exist."
+fi
+
+
+is_proot_running $PROOT_NAME
+
+if [[ "$?" == "0" ]];
+then
+    abort "The proot '$PROOT_NAME' is already running."
 fi
 
 
@@ -82,12 +68,14 @@ then
     SD_BINDING="--bind $EXT_SD:/mnt/extsd"
 fi
 
-echo "Trying to power-on proot '${PROOT} ..."
-screen -dmS proot_${PROOT} proot-distro login ${PROOT} ${SD_BINDING} \
-                                        --shared-tmp --no-kill-on-exit \
-                                        -- /usr/sbin/sshd -p 8002
+echo "Trying to power-on proot '$PROOT_NAME ..."
+screen -dmS proot_${PROOT_NAME} proot-distro login ${PROOT_NAME} \ 
+                                                   ${SD_BINDING} \
+                                                   --shared-tmp \ 
+                                                   --no-kill-on-exit \
+                                                   -- /usr/sbin/sshd -p 8002
 
-is_proot_running $PROOT
+is_proot_running $PROOT_NAME
 
 if [ "$?" == "0" ];
 then

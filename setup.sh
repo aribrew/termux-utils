@@ -57,7 +57,7 @@ then
 fi
 
 
-if ! [[ -f "$HOME/.environment" ]];u
+if ! [[ -f "$HOME/.environment" ]];
 then
     touch "$HOME/.environment"
     echo "source \$HOME/.environment" >> "$HOME/.bashrc"
@@ -95,12 +95,16 @@ then
 
     if ! [[ "$?" == "0" ]];
     then
-        abort "Failed downloading bash_helpers. Aborting."
+        abort "Failed downloading bash_helpers.sh. Aborting."
     fi
 
     mv bash_helpers.sh "$SCRIPTS/"
     chmod +x "$SCRIPTS/bash_helpers.sh"
 fi
+
+
+export PATH=$SCRIPTS:$PATH
+source bash_helpers.sh
 
 
 echo ""
@@ -122,6 +126,7 @@ pkg upgrade -y
 BASIC_PACKAGES="git openssh micro screen"
 
 
+echo ""
 echo "Installing some basic packages if not yet available..."
 echo "------------------------------------------------------"
 
@@ -134,16 +139,22 @@ then
 fi
 
 
-echo "Please enter a password for login from SSH"
-echo ""
+if ! [[ -f "$HOME/.ssh_password_set" ]];
+then
+    echo "Please enter a password for login from SSH"
+    echo ""
 
-PASSWD_OK="1"
+    PASSWD_OK="1"
 
-while ! [[ "$PASSWD_OK" == "0" ]];
-do
-    passwd
-    PASSWD_OK=$?
-done
+    while ! [[ "$PASSWD_OK" == "0" ]];
+    do
+        passwd
+        PASSWD_OK=$?
+    done
+
+    touch "$HOME/.ssh_password_set"
+fi
+
 
 echo ""
 echo "Done. To change it, simply run 'passwd'."
@@ -165,13 +176,13 @@ then
 fi
 
 
-if [ -d "$HOME/termux-utils" ];
+if [[ -d "$HOME/termux-utils" ]];
 then
     chmod -R 770 "$HOME/termux-utils"
 fi
 
 
-if [ -d "$HOME/storage/external-1" ];
+if [[ -d "$HOME/storage/external-1" ]];
 then
     "$HOME/termux-utils/find_extsd"
 fi
