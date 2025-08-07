@@ -42,6 +42,9 @@ echo "Performing a basic Termux setup..."
 echo "=================================="
 
 
+SCRIPT_DIR=$(realpath $(dirname $0))
+SCRIPTS=$HOME/.local/bin
+
 if ! [[ -d "$SCRIPTS" ]];
 then
     mkdir -p "$SCRIPTS"
@@ -61,29 +64,29 @@ then
 fi
 
 
-if ! [[ -v TMP ]];
-then
-    if ! [[ -d $HOME/tmp ]];
-    then
-        mkdir -p $HOME/tmp
-    fi
-
-    export TMP=$HOME/tmp
-fi
-
-
-grep -q "\$HOME/scripts" "$HOME/.environment"
+#if ! [[ -v TMP ]];
+#then
+#    if ! [[ -d $HOME/tmp ]];
+#    then
+#        mkdir -p $HOME/tmp
+#    fi
+#
+#    export TMP=$HOME/tmp
+#fi
 
 
-if ! [[ "$?" == "0" ]];
-then
-    echo "export PATH=\$HOME/scripts:\$PATH" >> "$HOME/.environment"
-
-    export PATH=$HOME/scripts:$PATH
-fi
+#grep -q "\$HOME/scripts" "$HOME/.environment"
 
 
-if ! [[ -f "$HOME/scripts/bash_helpers.sh" ]];
+#if ! [[ "$?" == "0" ]];
+#then
+#    echo "export PATH=\$HOME/scripts:\$PATH" >> "$HOME/.environment"
+#
+#    export PATH=$HOME/scripts:$PATH
+#fi
+
+
+if ! [[ -f "$SCRIPTS/bash_helpers.sh" ]];
 then
     CDIR=$PWD
     cd $TMP
@@ -183,6 +186,10 @@ if [ -d "$HOME/storage/external-1" ];
 then
     "$HOME/termux-utils/find_extsd"
 fi
+
+
+cp "$SCRIPT_DIR/.termux_env" $HOME/
+echo "source \$HOME/.termux_env" >> $HOME/. environment
 
 
 echo ""
