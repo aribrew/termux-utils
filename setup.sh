@@ -138,6 +138,8 @@ then
     abort "Failed."
 fi
 
+echo ""
+
 
 if ! [[ -f "$HOME/.ssh_password_set" ]];
 then
@@ -156,11 +158,10 @@ then
 fi
 
 
-echo ""
-echo "Done. To change it, simply run 'passwd'."
+echo "To change it, simply run 'passwd'."
 echo ""
 
-sv-enable openssh
+sv-enable sshd
 
 if ! [[ -d "$HOME/termux-utils" ]];
 then
@@ -195,7 +196,7 @@ cp "$SCRIPT_DIR/.termux_env" $HOME/
 echo "export PATH=$SCRIPTS:\$PATH" >> "$HOME/.termux_env"
 echo "export PATH=\$HOME/termux-utils/proot:\$PATH" >> "$HOME/.termux_env"
 
-echo "source \$HOME/.termux_env" >> $HOME/. environment
+echo "source \$HOME/.termux_env" >> "$HOME/.environment"
 
 
 echo ""
