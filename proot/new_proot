@@ -176,6 +176,11 @@ then
 
     echo "export PROOT_PATH=\"${PROOT_PATH}\"" >> \
          "$HOME/.${PROOT_NAME}_proot_env"
+
+    echo "echo \"Environment for '$PROOT_NAME' proot loaded.\"" >> \
+         "$HOME/.${PROOT_NAME}_proot_env"
+
+    echo "echo \"\"" >> "$HOME/.${PROOT_NAME}_proot_env"
 fi
 
 
@@ -183,13 +188,13 @@ echo -n "Proot distro $PROOT_NAME ($PROOT_DISTRO) installed in "
 echo "$PROOT_PATH."
 
 echo "The following variables have been added to ~/.${PROOT_NAME}_proot_env: "
-echo "- $PROOT_NAME: The name of the loaded proot."
-echo "- $PROOT_DISTRO: Contains the distro name"
-echo "- $PROOT_USER: Contains the default user"
-echo "- $PROOT_PATH: Contains the proot path"
+echo "- \$PROOT_NAME: The name of the loaded proot."
+echo "- \$PROOT_DISTRO: Contains the distro name"
+echo "- \$PROOT_USER: Contains the default user"
+echo "- \$PROOT_PATH: Contains the proot path"
 echo ""
 echo "You can source it to include these variables in your current"
-echo "environment or add 'source \$HOME/${PROOT_NAME}_proot_env'"
+echo "environment or add 'source \$HOME/.${PROOT_NAME}_proot_env'"
 echo "(without single quotes) to your .bashrc or .environment file"
 echo "to get them added everytime you login."
 echo ""
