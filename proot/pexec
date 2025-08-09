@@ -52,7 +52,9 @@ proot_exists $PROOT_NAME -q
 
 if [[ "$?" == "0" ]];
 then
-    proot-distro login $PROOT_NAME --user $PROOT_USER $SD_BINDING \
-                                   --shared-tmp -- $CMDLINE
+    PROOT_LOGIN_OPTS="$PROOT_NAME --user $PROOT_USER "
+    PROOT_LOGIN_OPTS+="$SD_BINDING --shared-tmp -- $CMDLINE"
+    
+    proot-distro login $PROOT_LOGIN_OPTS
 fi
 

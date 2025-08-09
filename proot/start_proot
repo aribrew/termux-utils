@@ -62,14 +62,18 @@ then
     then
         SD_BINDING="--bind $EXT_SD:/mnt/extsd"
     fi
+
+
+    CMDLINE="/usr/sbin/sshd -p 8002"
+
+
+    PROOT_CMDLINE="proot-distro login "
+    PROOT_CMDLINE+="$PROOT_NAME $SD_BINDING "
+    PROOT_CMDLINE+="--shared=tmp --no-kill-on-exit -- $CMDLINE"
     
     
     echo "Trying to power-on proot '$PROOT_NAME ..."
-    screen -dmS proot_${PROOT_NAME} proot-distro login \ 
-                                                 $PROOT_NAME $SD_BINDING \
-                                                 --shared-tmp \
-                                                 --no-kill-on-exit \
-                                                 -- /usr/sbin/sshd -p 8002
+    screen -dmS proot_${PROOT_NAME} $PROOT_CMDLINE
     
     is_proot_running $PROOT_NAME
     
