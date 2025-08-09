@@ -133,12 +133,11 @@ echo "---------------------------------------------"
 
 proot-distro login $PROOT_NAME -- apt install -y openssh-server
 
+#echo ""
+#echo "Setting the password for the root user"
+#echo ""
 
-echo ""
-echo "Setting the password for the root user"
-echo ""
-
-proot-distro login $PROOT_NAME -- passwd
+#proot-distro login $PROOT_NAME -- passwd
 
 
 echo ""
@@ -149,11 +148,12 @@ proot-distro login $PROOT_NAME -- \
                  useradd --create-home \
                          --shell /bin/bash $PROOT_USER
 
-echo ""
-echo "Setting the password for the '$PROOT_USER' user"
-echo ""
 
-proot-distro login $PROOT_NAME -- passwd $PROOT_USER
+#echo ""
+#echo "Setting the password for the '$PROOT_USER' user"
+#echo ""
+
+#proot-distro login $PROOT_NAME -- passwd $PROOT_USER
 
 
 if [[ "$?" == "0" ]];
@@ -162,6 +162,33 @@ then
     echo "User $PROOT_USER created."
     echo ""
 fi
+
+
+echo ""
+echo "Generating SSH keys for proot ..."
+echo "---------------------------------"
+
+echo "You can simply answer all questions with ENTER."
+echo ""
+
+ssh-keygen -i ~/.ssh/.id_rsa
+
+if [[ "$?" == "0" ];
+then
+    echo ""
+    echo "Installing keys in proot ..."
+    echo "----------------------------"
+
+    mkdir -p "$PROOT_PATH/root/.ssh"
+    mkdir -p "$PROOT_PATH/puser/.ssh"
+
+    cat ~/.ssh/.id_rsa.pub >> $PROOT_PATH/root/.ssh/authorized_keys
+    cat ~/.ssh/.id_rsa.pub >> $PROOT_PATH/$PROOT_USER/.ssh/authorized_keys
+fi
+
+
+cp "$SCRIPT_PATH/proot_files/.ssh/config" $PROOT_PATH/root/.ssh/
+cp "$SCRIPT_PATH/proot_files/.ssh/config" $PROOT_PATH/$PROOT_USER/.ssh/
 
 
 cp $SCRIPT_PATH/proot_scripts/* "$PROOT_PATH/usr/bin/"
