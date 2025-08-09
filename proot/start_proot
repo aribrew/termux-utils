@@ -42,7 +42,7 @@ fi
 if ! [[ -v PROOT_NAME ]];
 then
     PROOT_NAME=$1
-f
+fi
 
 
 is_proot_running $PROOT_NAME -q
