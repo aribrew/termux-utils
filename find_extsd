@@ -50,7 +50,7 @@ else
 
         if ! [[ "$?" == "0" ]];
         then
-            echo "export EXT_SD=\"${EXTSD_PATH}\"" >> "$HOME/.environment"
+            echo "export EXT_SD=\"${EXTSD_PATH}\"" >> "$HOME/.termux_env"
         fi
         
         echo ""

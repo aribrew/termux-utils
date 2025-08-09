@@ -69,7 +69,7 @@ then
 
     PROOT_CMDLINE="proot-distro login "
     PROOT_CMDLINE+="$PROOT_NAME $SD_BINDING "
-    PROOT_CMDLINE+="--shared=tmp --no-kill-on-exit -- $CMDLINE"
+    PROOT_CMDLINE+="--shared-tmp --no-kill-on-exit -- $CMDLINE"
     
     
     echo "Trying to power-on proot '$PROOT_NAME ..."
