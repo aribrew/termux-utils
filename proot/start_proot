@@ -79,7 +79,7 @@ then
     
     if [[ "$?" == "0" ]];
     then
-        echo "Proot '${PROOT}' should be now available for remote working."
+        echo "Proot '$PROOT_NAME' should be now available for remote working."
         echo ""
     
     else
