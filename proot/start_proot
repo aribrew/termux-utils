@@ -45,40 +45,39 @@ then
 fi
 
 
-is_proot_running $PROOT_NAME -q
-
-
-if [[ "$?" == "0" ]];
-then
-    abort "The proot '$PROOT_NAME' is already running."
-fi
-
-
-if ! [[ "$EXT_SD" == "" ]];
-then
-    SD_BINDING="--bind $EXT_SD:/mnt/extsd"
-fi
-
-
-proot_exists $PROOT_NAME
-
+proot_exists $PROOT_NAME -q
 
 if [[ "$?" == "0" ]];
 then
+    is_proot_running $PROOT_NAME
+    
+    
+    if [[ "$?" == "0" ]];
+    then
+        abort "The proot '$PROOT_NAME' is already running."
+    fi
+    
+    
+    if ! [[ "$EXT_SD" == "" ]];
+    then
+        SD_BINDING="--bind $EXT_SD:/mnt/extsd"
+    fi
+    
+    
     echo "Trying to power-on proot '$PROOT_NAME ..."
     screen -dmS proot_${PROOT_NAME} proot-distro login \ 
                                                  $PROOT_NAME $SD_BINDING \
                                                  --shared-tmp \
                                                  --no-kill-on-exit \
                                                  -- /usr/sbin/sshd -p 8002
-
+    
     is_proot_running $PROOT_NAME
-
+    
     if [[ "$?" == "0" ]];
     then
         echo "Proot '${PROOT}' should be now available for remote working."
         echo ""
-
+    
     else
         abort "Can't find proot's screen. Something failed."
     fi
