@@ -86,6 +86,8 @@ fi
 if ! [[ -f "$HOME/.proots_env" ]];
 then
     cp "$SCRIPT_PATH/.proots_env" $HOME/
+    echo "source \"\$HOME/.proots_env\"" >> "$HOME/.environment"
+
     source "$HOME/.proots_env"
 fi
 
