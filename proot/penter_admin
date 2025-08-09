@@ -34,7 +34,7 @@ then
 fi
 
 
-proot_exists $PROOT_NAME
+proot_exists $PROOT_NAME -q
 
 if [[ "$?" == "0" ]];
 then

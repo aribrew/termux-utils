@@ -94,9 +94,11 @@ fi
 
 PROOT_PATH="$PROOTS/$PROOT_NAME"
 
-if [[ -d "$PROOT_PATH" ]];
+proot_exists $PROOT_NAME
+
+if [[ "$?" == "1" ]];
 then
-    abort "A proot named '$PROOT_NAME' already exists in $PROOT_PATH."
+    abort
 fi
 
 

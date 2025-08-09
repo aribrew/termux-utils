@@ -22,8 +22,7 @@ then
 fi
 
 
-if [[ "$PROOT_NAME" == "" ]] && 
-   [[ "$1" == "" ]] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
+if [[ "$1" == "" ]] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
 then
     usage
     abort
@@ -36,7 +35,7 @@ then
 fi
 
 
-proot_exists $PROOT_NAME
+proot_exists $PROOT_NAME -q
 
 
 if [[ "$?" == "0" ]];
