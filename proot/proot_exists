@@ -5,7 +5,8 @@ source bash_helpers.sh
 
 usage()
 {
-    echo "Usage: proot_exists <proot name>"
+    echo "Usage: proot_exists <proot name> [-q]"
+    echo "If -q is provided, no message Will be printed."
     echo ""
 }
 
@@ -20,17 +21,27 @@ fi
 
 PROOT_NAME=$1
 
+if [[ "$2" == "-q" ]];
+then
+    QUIET=1
+fi
 
 if [[ "$PROOT_NAME" == "" ]] || ! [[ -d "$PROOTS/$PROOT_NAME" ]];
 then
-    echo "No proot named '$PROOT_NAME' exists."
-    echo ""
+    if ! [[ -v QUIET ]];
+    then
+        echo "No proot named '$PROOT_NAME' exists."
+        echo ""
+    fi
 
     exit 1
     
 else
-    echo "The proot '$PROOT_NAME' exists."
-    echo ""
+    if ! [[ -v QUIET ]];
+    then
+        echo "The proot '$PROOT_NAME' exists."
+        echo ""
+    fi
 
     exit 0
 fi
