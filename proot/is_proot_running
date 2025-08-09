@@ -22,7 +22,7 @@ then
 fi
 
 
-if [[ "$1" == "" ]] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
+if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
 then
     usage
     abort
@@ -41,4 +41,11 @@ proot_exists $PROOT_NAME -q
 if [[ "$?" == "0" ]];
 then
     screen -list | grep -q "proot_${PROOT_NAME}"
+
+    if [[ "$?" == "0" ]];
+    then
+        exit 0
+    else
+        exit 1
+    fi
 fi
