@@ -194,7 +194,6 @@ fi
 cp "$SCRIPT_DIR/.termux_env" $HOME/
 
 echo "export PATH=$SCRIPTS:\$PATH" >> "$HOME/.termux_env"
-echo "export PATH=\$HOME/termux-utils/proot:\$PATH" >> "$HOME/.termux_env"
 
 echo "source \$HOME/.termux_env" >> "$HOME/.environment"
 
