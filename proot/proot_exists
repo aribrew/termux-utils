@@ -26,11 +26,11 @@ then
     echo "No proot named '$PROOT_NAME' exists."
     echo ""
 
-    return 1
+    exit 1
     
 else
     echo "The proot '$PROOT_NAME' exists."
     echo ""
 
-    return 0
+    exit 0
 fi
