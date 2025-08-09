@@ -5,7 +5,7 @@ source bash_helpers.sh
 
 usage()
 {
-    echo "Usage: proot_is_running [proot name]"
+    echo "Usage: proot_is_running [proot name] [-q]"
     echo ""
     echo "Checks if the given proot is accesible."
     echo "If no proot name is given, the loaded proot env will be used."
@@ -35,6 +35,12 @@ then
 fi
 
 
+if [[ "$1" == "-q" ]] || [[ "$2" == "-q" ]];
+then
+    QUIET=1
+fi
+
+
 proot_exists $PROOT_NAME -q
 
 
@@ -44,8 +50,20 @@ then
 
     if [[ "$?" == "0" ]];
     then
+        if ! [[ -v QUIET ]];
+        then
+            echo "The proot '$PROOT_NAME' is running."
+            echo ""
+        fi
+
         exit 0
     else
+        if ! [[ -v QUIET ]];
+        then
+            echo "The proot '$PROOT_NAME' isn't running."
+            echo ""
+        fi
+
         exit 1
     fi
 fi

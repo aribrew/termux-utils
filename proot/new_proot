@@ -85,7 +85,7 @@ fi
 
 if ! [[ -f "$HOME/.proots_env" ]];
 then
-    cp "$SCRIPT_PATH/.proots_env" $HOME/
+    cp "$SCRIPT_PATH/termux_files/.proots_env" $HOME/
     echo "source \"\$HOME/.proots_env\"" >> "$HOME/.environment"
 
     source "$HOME/.proots_env"
@@ -94,7 +94,7 @@ fi
 
 PROOT_PATH="$PROOTS/$PROOT_NAME"
 
-proot_exists $PROOT_NAME
+proot_exists $PROOT_NAME -q
 
 if [[ "$?" == "1" ]];
 then
@@ -164,34 +164,34 @@ then
 fi
 
 
-echo ""
-echo "Generating SSH keys for proot ..."
-echo "---------------------------------"
-
-echo "You can simply answer all questions with ENTER."
-echo ""
-
-ssh-keygen -i ~/.ssh/.id_rsa
-
-if [[ "$?" == "0" ];
+if ! [[ -f "$HOME/.ssh/.id_rsa" ]];
 then
     echo ""
-    echo "Installing keys in proot ..."
-    echo "----------------------------"
+    echo "Generating SSH keys for proot ..."
+    echo "---------------------------------"
 
-    mkdir -p "$PROOT_PATH/root/.ssh"
-    mkdir -p "$PROOT_PATH/puser/.ssh"
+    echo "You can simply answer all questions with ENTER."
+    echo ""
 
-    cat ~/.ssh/.id_rsa.pub >> $PROOT_PATH/root/.ssh/authorized_keys
-    cat ~/.ssh/.id_rsa.pub >> $PROOT_PATH/$PROOT_USER/.ssh/authorized_keys
+    ssh-keygen -i $HOME/.ssh/.id_rsa
+
+    cp "$SCRIPT_PATH/termux_files/.ssh/config" $HOME/.ssh/
 fi
 
 
-cp "$SCRIPT_PATH/proot_files/.ssh/config" $PROOT_PATH/root/.ssh/
-cp "$SCRIPT_PATH/proot_files/.ssh/config" $PROOT_PATH/$PROOT_USER/.ssh/
+echo ""
+echo "Installing keys in proot ..."
+echo "----------------------------"
+
+mkdir -p "$PROOT_PATH/root/.ssh"
+mkdir -p "$PROOT_PATH/puser/.ssh"
+
+cat $HOME/.ssh/.id_rsa.pub >> $PROOT_PATH/root/.ssh/authorized_keys
+cat $HOME/.ssh/.id_rsa.pub >> $PROOT_PATH/$PROOT_USER/.ssh/authorized_keys
 
 
 cp $SCRIPT_PATH/proot_scripts/* "$PROOT_PATH/usr/bin/"
+chmod -R +x "$PROOT_PATH/usr/bin/"
 
 
 if ! [[ -f "$HOME/.${PROOT_NAME}_proot_env" ]];

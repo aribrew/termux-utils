@@ -191,7 +191,7 @@ then
 fi
 
 
-cp "$SCRIPT_DIR/.termux_env" $HOME/
+cp "$SCRIPT_DIR/termux_files/.termux_env" $HOME/
 
 echo "export PATH=$SCRIPTS:\$PATH" >> "$HOME/.termux_env"
 
