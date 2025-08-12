@@ -1,0 +1,18 @@
+#!/bin/bash
+
+source bash_helpers.sh
+
+
+if [[ "$TERMUX_VERSION" == "" ]];
+then
+    abort "This script is intended for Termux only."
+fi
+
+
+if ! [[ -f "$HOME/.3d_accel_setup_done" ]];
+then
+    abort "3D acceleration not setup yet."
+fi
+
+
+screen -dmS virgl_server virgl_test_server_android &
