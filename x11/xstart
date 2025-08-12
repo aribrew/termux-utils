@@ -1,0 +1,69 @@
+#!/bin/bash
+
+source bash_helpers.sh
+
+
+usage()
+{
+    echo "Usage: "
+    echo ""
+}
+
+
+
+
+if [[ "$TERMUX_VERSION" == "" ]];
+then
+    abort "This script is intended for Termux only."
+fi
+
+
+if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
+then
+    usage
+    abort
+fi
+
+
+# Kill existing X11 processes
+kill -9 $(pgrep -f "termux.x11") 2>/dev/null
+
+
+# Enable PulseAudio
+PULSE_OPTS="module-native-protocol-tcp "
+PULSE_OPTS+="auth-ip-acl=127.0.0.1 "
+PULSE_OPTS+="auth-anonymous=1"
+
+pulseaudio --start --load="$PULSE_OPTS" --exit-idle-time=-1
+
+
+# Prepare termux-x11 session
+export XDG_RUNTIME_DIR=${TMPDIR}
+termux-x11 :0 >/dev/null &
+
+
+# Launch Termux X11 main activity
+am start --user 0 -n com.termux.x11/com.termux.x11.MainActivity > /dev/null 2>&1
+sleep
+
+
+export PULSE_SERVER=127.0.0.1
+export XDG_RUNTIME_DIR=${TMPDIR}
+export DISPLAY=:0
+
+if [[ "$DESKTOP" == "lxde" ]];
+then
+    startlxde
+fi
+
+
+#proot-distro login debian --shared-tmp -- /bin/bash -c  'export PULSE_SERVER=127.0.0.1 && export XDG_RUNTIME_DIR=${TMPDIR} && su - droidmaster -c "env DISPLAY=:0 startlxde"'
+
+
+
+if [[ "$1" == "" ]] && [[ -v DESKTOP ]];
+then
+    
+fi
+
+
