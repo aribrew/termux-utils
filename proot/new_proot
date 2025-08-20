@@ -96,7 +96,7 @@ PROOT_PATH="$PROOTS/$PROOT_NAME"
 
 proot_exists $PROOT_NAME -q
 
-if [[ "$?" == "1" ]];
+if [[ "$?" == "0" ]];
 then
     abort
 fi
