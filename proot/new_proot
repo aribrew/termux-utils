@@ -34,6 +34,15 @@ then
 fi
 
 
+echo "Checking for proot-distro updates ..."
+echo "-------------------------------------"
+
+pkg update
+pkg upgrade -y
+
+echo ""
+
+
 if ! [[ -f "$PREFIX/bin/proot-distro" ]];
 then
     echo "Installing proot-distro ..."
@@ -158,7 +167,6 @@ proot-distro login $PROOT_NAME -- \
 
 if [[ "$?" == "0" ]];
 then
-    echo ""
     echo "User $PROOT_USER created."
     echo ""
 fi
@@ -173,25 +181,33 @@ then
     echo "You can simply answer all questions with ENTER."
     echo ""
 
-    ssh-keygen -i $HOME/.ssh/.id_rsa
+    ssh-keygen -f $HOME/.ssh/.id_rsa
+
+    if ! [[ "$?" == "0" ]];
+    then
+        abort "Failed generating SSH key."
+    fi
 
     cp "$SCRIPT_PATH/termux_files/.ssh/config" $HOME/.ssh/
 fi
 
 
-echo ""
-echo "Installing keys in proot ..."
-echo "----------------------------"
+if [[ -f "$HOME/.ssh/.id_rsa" ]];
+then
+    echo ""
+    echo "Installing keys in proot ..."
+    echo "----------------------------"
 
-mkdir -p "$PROOT_PATH/root/.ssh"
-mkdir -p "$PROOT_PATH/puser/.ssh"
+    mkdir -p "$PROOT_PATH/root/.ssh"
+    mkdir -p "$PROOT_PATH/puser/.ssh"
 
-cat $HOME/.ssh/.id_rsa.pub >> $PROOT_PATH/root/.ssh/authorized_keys
-cat $HOME/.ssh/.id_rsa.pub >> $PROOT_PATH/$PROOT_USER/.ssh/authorized_keys
+    cat $HOME/.ssh/.id_rsa.pub >> $PROOT_PATH/root/.ssh/authorized_keys
+    cat $HOME/.ssh/.id_rsa.pub >> $PROOT_PATH/$PROOT_USER/.ssh/authorized_keys
+fi
 
 
-cp $SCRIPT_PATH/proot_scripts/* "$PROOT_PATH/usr/bin/"
-chmod -R +x "$PROOT_PATH/usr/bin/"
+cp $SCRIPT_PATH/proot_scripts/* $PROOT_PATH/usr/bin/
+chmod -R +x $PROOT_PATH/usr/bin
 
 
 if ! [[ -f "$HOME/.${PROOT_NAME}_proot_env" ]];
