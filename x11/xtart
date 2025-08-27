@@ -1,16 +1,11 @@
 #!/bin/bash
 
-echo "Entering X11 ..."
-echo ""
-
-
 EXEC=$1
 ARGS=${@:2}
 
 
 echo "Running '$EXEC' in X11..."
 
-am start -S -n com.termux.x11/.MainActivity
-
+show_x11.sh
 
 "$EXEC" $ARGS

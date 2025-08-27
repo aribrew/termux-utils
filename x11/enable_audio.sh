@@ -3,7 +3,9 @@
 source "$HOME/.audio_env"
 
 echo -n "Enabling audio ... "
-screen -dmS pulseaudio --start --load=$PULSEAUDIO_OPTS --exit-idle-time=-1
+screen -dmS audio_server pulseaudio --start \
+                                    --load="$PULSEAUDIO_OPTS" \
+                                    --exit-idle-time=-1
 
 if ! [[ "$?" == "0" ]];
 then
