@@ -1,8 +1,19 @@
-if ! [[ "$TERMUX_VERSION" == "" ]];
+if ! [[ -v SOUNDFONT ]];
 then
-    SOUNDFONT="$SCRIPT_HOME/GeneralUser-GS.sf2"
-else
-    echo "TODO: Find system's soundfont."
+    echo "A preferred SOUNDFONT wasn't set. Finding available ones ..."
+    echo ""
+    
+    if ! [[ "$TERMUX_VERSION" == "" ]];
+    then
+        SOUNDFONT="$SCRIPT_HOME/GeneralUser-GS.sf2"
+    else
+        SOUNDFONTS=$(find /usr/share/* -type f -name "*.sf2")
+
+        if ! [[ "$SOUNDFONTS" == "" ]];
+        then
+            SOUNDFONT=$(echo "$SOUNDFONTS" | grep -m 1 .sf2)
+        fi
+    fi
 fi
 
 
@@ -15,5 +26,6 @@ else
     export FLUIDSYNTH_OPTS+="-s \"$SOUNDFONT\""
 
     echo "MIDI environment loaded."
+    echo "Using '$SOUNDFONT' soundfont."
     echo ""
 fi
