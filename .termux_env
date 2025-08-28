@@ -12,18 +12,49 @@ export USER_SCRIPTS=$HOME/.local/bin
 #fi
 
 
+# These will affect the loading of some things.
+if [[ -f "$HOME/.termux_env_tweaks" ]];
+then
+    source "$HOME/.termux_env_tweaks."
+
+    echo "Loaded tweaks for Termux environment."
+    echo ""
+fi
+
+
 if [[ -f "$PREFIX/bin/proot-distro" ]];
 then
     source "$TERMUX_UTILS/proots/.proots_env"
 fi
 
 
-if [[ -f "$HOME/.user_env" ]];
+if [[ -f "$PREFIX/bin/termux-x11" ]] && ! [[ -v DISABLE_X11 ]];
 then
-    source "$HOME/.user_env"
+    source "$TERMUX_UTILS/x11/.x11_env"
 fi
 
 
-echo ""
-echo "Loaded Termux environment."
+if [[ -f "$PREFIX/bin/pulseaudio" ]] && ! [[ -v DISABLE_AUDIO ]];
+then
+    source "$TERMUX_UTILS/x11/.audio_env"
+fi
+
+
+if [[ -f "$PREFIX/bin/virgl_test_server_android" ]] && ! [[ -v DISABLE_GL ]];
+then
+    source "$TERMUX_UTILS/x11/.3d_env"
+fi
+
+
+# Your own config
+if [[ -f "$HOME/.user_env" ]] && ! [[ -v DISABLE_USER_ENV ]];
+then
+    source "$HOME/.user_env"
+
+    echo "Loaded user environment."
+    echo ""
+fi
+
+
+echo "Finished loading Termux environment."
 echo ""

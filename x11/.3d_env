@@ -5,3 +5,7 @@ export GALLIUM_DRIVER=zink
 
 export ZINK_DESCRIPTORS=lazy virgl_test_server 
 export ZINK_DESCRIPTORS+=--use-egl-surfaceless --use-gles &
+
+echo "Loaded 3D acceleration environment."
+echo "You can now enable 3D acceleration support for Termux:X11."
+echo ""

@@ -24,8 +24,15 @@ then
 else
     export FLUIDSYNTH_OPTS="-a alsa -m alsa_seq -l "
     export FLUIDSYNTH_OPTS+="-s \"$SOUNDFONT\""
+fi
 
+
+if [[ -v FLUIDSYNTH_OPTS ]];
+then
     echo "MIDI environment loaded."
     echo "Using '$SOUNDFONT' soundfont."
     echo ""
+    echo "You can now enable MIDI support for use with X11 apps."
+    echo ""
 fi
+
