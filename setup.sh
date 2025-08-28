@@ -101,8 +101,8 @@ fi
 pkg upgrade -y
 
 
-BASIC_PACKAGES="termux-services git openssh micro screen which mandoc 2"
-BASIC_PACKAGES+="ranger termux-usb termux-api"
+BASIC_PACKAGES="termux-services git openssh micro screen which mandoc"
+BASIC_PACKAGES+="ranger libusb clang termux-api"
 
 
 echo ""
