@@ -40,6 +40,12 @@ then
 fi
 
 
+if [[ -f "$PREFIX/bin/fluidsynth" ]] && ! [[ -v DISABLE_MIDI ]];
+then
+    source "$TERMUX_UTILS/x11/midi_support/.midi_env"
+fi
+
+
 if [[ -f "$PREFIX/bin/virgl_test_server_android" ]] && ! [[ -v DISABLE_GL ]];
 then
     source "$TERMUX_UTILS/x11/.3d_env"
