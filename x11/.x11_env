@@ -1,6 +1,8 @@
 export DISPLAY=:0
 export XDG_RUNTIME_DIR=$TMPDIR
 
+export X11_ENV_LOADED=1
+
 echo "Loaded X11 environment."
 echo "You can now start a desktop or a X11 app directly."
 echo ""

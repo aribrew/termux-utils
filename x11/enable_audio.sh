@@ -1,19 +1,23 @@
 #!/bin/bash
 
-source "$HOME/.audio_env"
-
-echo -n "Enabling audio ... "
-screen -dmS audio_server pulseaudio --start \
-                                    --load="$PULSEAUDIO_OPTS" \
-                                    --exit-idle-time=-1
-
-if ! [[ "$?" == "0" ]];
+if ! [[ -v AUDIO_ENV_LOADED ]];
 then
-    echo "Failed!"
+    echo "PulseAudio environment isn't loaded."
     echo ""
+else
+    echo -n "Enabling audio ... "
+    screen -dmS audio_server pulseaudio --start \
+                                        --load="$PULSEAUDIO_OPTS" \
+                                        --exit-idle-time=-1
 
-    exit 1
+    if ! [[ "$?" == "0" ]];
+    then
+        echo "Failed!"
+        echo ""
+
+        exit 1
+    fi
+
+    echo "Done."
+    echo ""
 fi
-
-echo "Done."
-echo ""

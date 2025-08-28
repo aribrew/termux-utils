@@ -29,6 +29,8 @@ fi
 
 if [[ -v FLUIDSYNTH_OPTS ]];
 then
+    export MIDI_ENV_LOADED=1
+    
     echo "MIDI environment loaded."
     echo "Using '$SOUNDFONT' soundfont."
     echo ""

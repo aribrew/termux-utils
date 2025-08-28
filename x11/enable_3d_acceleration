@@ -16,3 +16,12 @@ fi
 
 
 screen -dmS virgl_server virgl_test_server_android &
+
+
+if ! [[ "$?" == "0" ]];
+then
+    abort "Failed to start VirGL server."
+fi
+
+echo "3D acceleration SHOULD be enabled now."
+echo ""
