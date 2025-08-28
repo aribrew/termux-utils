@@ -42,12 +42,12 @@ echo "Performing a basic Termux setup..."
 echo "=================================="
 
 
-SCRIPT_DIR=$(realpath $(dirname $0))
-SCRIPTS=$HOME/.local/bin
+SCRIPT_PATH=$(realpath $(dirname $0))
+USER_SCRIPTS=$HOME/.local/bin
 
-if ! [[ -d "$SCRIPTS" ]];
+if ! [[ -d "$USER_SCRIPTS" ]];
 then
-    mkdir -p "$SCRIPTS"
+    mkdir -p "$USER_SCRIPTS"
 fi
 
 
@@ -64,32 +64,10 @@ then
 fi
 
 
-#if ! [[ -v TMP ]];
-#then
-#    if ! [[ -d $HOME/tmp ]];
-#    then
-#        mkdir -p $HOME/tmp
-#    fi
-#
-#    export TMP=$HOME/tmp
-#fi
-
-
-#grep -q "\$HOME/scripts" "$HOME/.environment"
-
-
-#if ! [[ "$?" == "0" ]];
-#then
-#    echo "export PATH=\$HOME/scripts:\$PATH" >> "$HOME/.environment"
-#
-#    export PATH=$HOME/scripts:$PATH
-#fi
-
-
-if ! [[ -f "$SCRIPTS/bash_helpers.sh" ]];
+if ! [[ -f "$USER_SCRIPTS/bash_helpers.sh" ]];
 then
     CDIR=$PWD
-    cd $TMP
+    cd $TMPDIR
     
     curl -LO $BASH_HELPERS_URL
 
@@ -98,12 +76,12 @@ then
         abort "Failed downloading bash_helpers.sh. Aborting."
     fi
 
-    mv bash_helpers.sh "$SCRIPTS/"
-    chmod +x "$SCRIPTS/bash_helpers.sh"
+    mv bash_helpers.sh "$USER_SCRIPTS/"
+    chmod +x "$USER_SCRIPTS/bash_helpers.sh"
 fi
 
 
-export PATH=$SCRIPTS:$PATH
+export PATH=$USER_SCRIPTS:$PATH
 source bash_helpers.sh
 
 
@@ -123,7 +101,8 @@ fi
 pkg upgrade -y
 
 
-BASIC_PACKAGES="termux-services git openssh micro screen"
+BASIC_PACKAGES="termux-services git openssh micro screen which mandoc 2"
+BASIC_PACKAGES+="ranger termux-usb termux-api"
 
 
 echo ""
@@ -163,6 +142,7 @@ echo ""
 
 sv-enable sshd
 
+
 if ! [[ -d "$HOME/termux-utils" ]];
 then
     echo ""
@@ -191,17 +171,23 @@ then
 fi
 
 
-cp "$SCRIPT_DIR/termux_files/.termux_env" $HOME/
+#cp "$SCRIPT_PATH/termux_files/.termux_env" $HOME/
 
-echo "export PATH=$SCRIPTS:\$PATH" >> "$HOME/.termux_env"
+#echo "export PATH=$USER_SCRIPTS:\$PATH" >> "$HOME/.termux_env"
 
-echo "source \$HOME/.termux_env" >> "$HOME/.environment"
+#echo "source \$HOME/.termux_env" >> "$HOME/.environment"
+echo "source \"$SCRIPT_PATH/.termux_env\"" >> "$HOME/.environment"
 
 
 echo ""
 echo "Basic Termux setup done."
+echo ""
 echo "You can now setup more things using the scripts contained in the"
 echo "repository downloaded in ~/termux-utils' if you wish."
+echo ""
+echo "The ~/.termux_env will prepare the environment every time you log in."
+echo "Also, it will load an extra ~/.user_env, if exists, where you can add"
+echo "any configuration you want."
 echo ""
 echo "Restart Termux before continuing."
 echo ""

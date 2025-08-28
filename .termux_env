@@ -1,0 +1,29 @@
+#!/bin/bash
+
+TERMUX_UTILS=$(realpath $(dirname $0))
+
+export USER_SCRIPTS=$HOME/.local/bin
+
+#echo "$PATH" | grep -q ".local/bin"
+
+#if ! [[ "$?" == "0" ]];
+#then
+#    export PATH="$HOME/.local/bin:$PATH"
+#fi
+
+
+if [[ -f "$PREFIX/bin/proot-distro" ]];
+then
+    source "$TERMUX_UTILS/proots/.proots_env"
+fi
+
+
+if [[ -f "$HOME/.user_env" ]];
+then
+    source "$HOME/.user_env"
+fi
+
+
+echo ""
+echo "Loaded Termux environment."
+echo ""

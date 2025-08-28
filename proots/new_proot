@@ -92,13 +92,13 @@ then
 fi
 
 
-if ! [[ -f "$HOME/.proots_env" ]];
-then
-    cp "$SCRIPT_PATH/termux_files/.proots_env" $HOME/
-    echo "source \"\$HOME/.proots_env\"" >> "$HOME/.environment"
-
-    source "$HOME/.proots_env"
-fi
+#if ! [[ -f "$HOME/.proots_env" ]];
+#then
+#    cp "$SCRIPT_PATH/termux_files/.proots_env" $HOME/
+#    echo "source \"\$HOME/.proots_env\"" >> "$HOME/.environment"
+#
+#    source "$HOME/.proots_env"
+#fi
 
 
 PROOT_PATH="$PROOTS/$PROOT_NAME"
@@ -154,8 +154,8 @@ echo "Creating the '$PROOT_USER' user"
 echo ""
 
 proot-distro login $PROOT_NAME -- \
-                 useradd --create-home \
-                         --shell /bin/bash $PROOT_USER
+             useradd --create-home \
+                      --shell /bin/bash $PROOT_USER
 
 
 #echo ""

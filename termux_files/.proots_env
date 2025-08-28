@@ -1,6 +1,0 @@
-#!/bin/bash
-
-SCRIPT_PATH=$(realpath $(dirname $0))
-
-export PROOTS="$PREFIX/var/lib/proot-distro/installed-rootfs"
-export PATH=$SCRIPT_PATH:$PATH

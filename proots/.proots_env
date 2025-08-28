@@ -1,0 +1,10 @@
+#!/bin/bash
+
+export PROOTS="$PREFIX/var/lib/proot-distro/installed-rootfs"
+
+PROOTS_ENV_PATH=$(realpath $(dirname $0))
+
+export PATH=$PROOTS_ENV_PATH:$PATH
+
+echo ""
+echo "Loaded proots enviroment."
