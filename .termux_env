@@ -15,14 +15,14 @@ export USER_SCRIPTS=$HOME/.local/bin
 # These will affect the loading of some things.
 if [[ -f "$HOME/.termux_env_tweaks" ]];
 then
-    source "$HOME/.termux_env_tweaks."
+    source "$HOME/.termux_env_tweaks"
 
     echo "Loaded tweaks for Termux environment."
     echo ""
 fi
 
 
-if [[ -f "$PREFIX/bin/proot-distro" ]];
+if [[ -f "$PREFIX/bin/proot-distro" ]] && ! [[ -v MINIMAL_TERMUX_ENV ]];
 then
     source "$TERMUX_UTILS/proots/.proots_env"
 fi
