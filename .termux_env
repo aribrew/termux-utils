@@ -28,25 +28,29 @@ then
 fi
 
 
-if [[ -f "$PREFIX/bin/termux-x11" ]] && ! [[ -v DISABLE_X11 ]];
+if [[ -f "$PREFIX/bin/termux-x11" ]] && ! [[ -v DISABLE_X11 ]] && 
+   ! [[ -v MINIMAL_TERMUX_ENV ]];
 then
     source "$TERMUX_UTILS/x11/.x11_env"
 fi
 
 
-if [[ -f "$PREFIX/bin/pulseaudio" ]] && ! [[ -v DISABLE_AUDIO ]];
+if [[ -f "$PREFIX/bin/pulseaudio" ]] && ! [[ -v DISABLE_AUDIO ]] &&
+   ! [[ -v MINIMAL_TERMUX_ENV ]];
 then
     source "$TERMUX_UTILS/x11/.audio_env"
 fi
 
 
-if [[ -f "$PREFIX/bin/fluidsynth" ]] && ! [[ -v DISABLE_MIDI ]];
+if [[ -f "$PREFIX/bin/fluidsynth" ]] && ! [[ -v DISABLE_MIDI ]] &&
+   ! [[ -v MINIMAL_TERMUX_ENV ]];
 then
     source "$TERMUX_UTILS/x11/midi_support/.midi_env"
 fi
 
 
-if [[ -f "$PREFIX/bin/virgl_test_server_android" ]] && ! [[ -v DISABLE_GL ]];
+if [[ -f "$PREFIX/bin/virgl_test_server_android" ]] && ! [[ -v DISABLE_GL ]] &&
+   ! [[ -v MINIMAL_TERMUX_ENV ]];
 then
     source "$TERMUX_UTILS/x11/.3d_env"
 fi
