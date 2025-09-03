@@ -4,6 +4,7 @@ TERMUX_UTILS=$(realpath $(dirname ${BASH_SOURCE[0]}))
 
 
 export USER_SCRIPTS=$HOME/.local/bin
+export PATH=$USER_SCRIPTS:$PATH
 
 
 # These will affect the loading of some things.
