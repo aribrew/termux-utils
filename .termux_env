@@ -4,13 +4,6 @@ TERMUX_UTILS=$(realpath $(dirname $0))
 
 export USER_SCRIPTS=$HOME/.local/bin
 
-#echo "$PATH" | grep -q ".local/bin"
-
-#if ! [[ "$?" == "0" ]];
-#then
-#    export PATH="$HOME/.local/bin:$PATH"
-#fi
-
 
 # These will affect the loading of some things.
 if [[ -f "$HOME/.termux_env_tweaks" ]];
@@ -18,6 +11,13 @@ then
     source "$HOME/.termux_env_tweaks"
 
     echo "Loaded tweaks for Termux environment."
+    echo ""
+fi
+
+
+if [[ -v MINIMAL_TERMUX_ENV ]];
+then
+    echo "A minimal Termux environment will be loaded."
     echo ""
 fi
 
