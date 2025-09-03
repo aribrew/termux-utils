@@ -1,6 +1,7 @@
 #!/bin/bash
 
-TERMUX_UTILS=$(realpath $(dirname $0))
+TERMUX_UTILS=$(realpath $(dirname ${BASH_SOURCE[0]}))
+
 
 export USER_SCRIPTS=$HOME/.local/bin
 
