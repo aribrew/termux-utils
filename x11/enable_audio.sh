@@ -1,9 +1,13 @@
 #!/bin/bash
 
+source bash_helpers.sh
+
+SCRIPT_HOME=$(realpath $(dirname $0))
+
+
 if ! [[ -v AUDIO_ENV_LOADED ]];
 then
-    echo "PulseAudio environment isn't loaded."
-    echo ""
+    source "$SCRIPT_HOME/.audio_env"
 else
     echo -n "Enabling audio ... "
     screen -dmS audio_server pulseaudio --start \
@@ -12,10 +16,7 @@ else
 
     if ! [[ "$?" == "0" ]];
     then
-        echo "Failed!"
-        echo ""
-
-        exit 1
+        abort "Failed!"
     fi
 
     echo "Done."

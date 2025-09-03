@@ -1,0 +1,6 @@
+export PULSE_SERVER=127.0.0.1
+export XDG_RUNTIME_DIR=${TMPDIR}
+export DISPLAY=:0
+
+echo ""
+echo "X11 environment loaded in proot."

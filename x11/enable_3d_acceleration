@@ -2,6 +2,14 @@
 
 source bash_helpers.sh
 
+SCRIPT_HOME=$(realpath $(dirname $0))
+
+
+if ! [[ -v 3D_ENV_LOADED ]];
+then
+    source "$SCRIPT_HOME/.x11_env"
+fi
+
 
 if [[ "$TERMUX_VERSION" == "" ]];
 then
