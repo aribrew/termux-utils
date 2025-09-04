@@ -1,10 +1,16 @@
-export MESA_NO_ERROR=1
-export MESA_GL_VERSION_OVERRIDE=4.3COMPAT
-export MESA_GLES_VERSION_OVERRIDE=3.2
-export GALLIUM_DRIVER=zink
 
-export ZINK_DESCRIPTORS=lazy virgl_test_server 
-export ZINK_DESCRIPTORS+=--use-egl-surfaceless --use-gles &
+SCRIPT_HOME=$(realpath $(dirname ${BASH_SOURCE[0]}))
+
+CPU_VENDOR=$("$SCRIPT_HOME/cpu_vendor.sh")
+
+if ! [[ "$CPU_VENDOR" == "Qualcomm" ]];
+then
+    export MESA_NO_ERROR=1
+    export MESA_GL_VERSION_OVERRIDE=4.3COMPAT
+    export MESA_GLES_VERSION_OVERRIDE=3.2
+    export GALLIUM_DRIVER=zink
+    export ZINK_DESCRIPTORS=lazy
+fi
 
 export 3D_ENV_LOADED=1
 

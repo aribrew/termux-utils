@@ -5,12 +5,6 @@ source bash_helpers.sh
 SCRIPT_HOME=$(realpath $(dirname $0))
 
 
-if ! [[ -v 3D_ENV_LOADED ]];
-then
-    source "$SCRIPT_HOME/.x11_env"
-fi
-
-
 if [[ "$TERMUX_VERSION" == "" ]];
 then
     abort "This script is intended for Termux only."
@@ -23,13 +17,31 @@ then
 fi
 
 
-screen -dmS virgl_server virgl_test_server_android &
+if ! [[ -v X11_ENV_LOADED ]];
+then
+    source "$SCRIPT_HOME/.x11_env"
+fi
+
+
+if ! [[ -v 3D_ENV_LOADED ]];
+then
+    source "$SCRIPT_HOME/.3d_env"
+fi
+
+
+if [[ "$GALLIUM_DRIVER" == "zink" ]];
+then
+    screen -dmS virgl_server virgl_test_server --use-egl-surfaceless --use-gles
+else
+    screen -dmS virgl_server virgl_test_server_android &
+fi
 
 
 if ! [[ "$?" == "0" ]];
 then
     abort "Failed to start VirGL server."
 fi
+
 
 echo "3D acceleration SHOULD be enabled now."
 echo ""
