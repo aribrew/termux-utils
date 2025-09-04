@@ -6,5 +6,7 @@ SCRIPT_HOME=$(realpath $(dirname ${BASH_SOURCE[0]}))
 export PROOTS="$PREFIX/var/lib/proot-distro/installed-rootfs"
 export PATH=$SCRIPT_HOME:$PATH
 
+export PROOTS_ENV_LOADED=1
+
 echo ""
 echo "Loaded proots enviroment."
