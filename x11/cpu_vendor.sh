@@ -6,13 +6,13 @@ VENDOR_ID=$(echo "$CPU_INFO" | grep -m 1 "vendor_id")
 
 if [[ "$VENDOR_ID" == "" ]];
 then
-    HARDWARE=$(echo "$CPU_INFO" | grep -m 1 "HARDWARE")
+    HARDWARE=$(echo "$CPU_INFO" | grep -m 1 "Hardware")
 
     if [[ "$HARDWARE" == "" ]];
     then
         echo "UNKNOWN"
     else
-        VENDOR=$(echo "$HARDWARE" | grep -m 1 "HARDWARE" | xargs)
+        VENDOR=$(echo "$HARDWARE" | grep -m 1 "Hardware" | xargs)
         VENDOR=$(echo "$VENDOR" | cut -d ':' -f 2 | xargs)
         
         if [[ $VENDOR == MT* ]];
