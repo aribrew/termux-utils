@@ -35,7 +35,7 @@ then
     CMDLINE=$*
 else
     PROOT_NAME=$1
-    CMDLINE=${@:2]
+    CMDLINE=${@:2}
 fi
 
 
@@ -50,7 +50,11 @@ proot_exists $PROOT_NAME -q
 
 if [[ "$?" == "0" ]];
 then
-    PROOT_LOGIN_OPTS="$PROOT_NAME $SD_BINDING --shared-tmp -- $CMDLINE"
+    PROOT_LOGIN_OPTS="$PROOT_NAME "
+    PROOT_LOGIN_OPTS+="$SD_BINDING "
+    PROOT_LOGIN_OPTS+="--shared-tmp "
+    PROOT_LOGIN_OPTS+="$PROOT_LOGIN_EXTRA_OPTS "
+    PROOT_LOGIN_OPTS+="-- $CMDLINE"
     
     proot-distro login $PROOT_LOGIN_OPTS
 fi

@@ -44,7 +44,11 @@ then
         SD_BINDING="--bind $EXT_SD:/mnt/extsd"
     fi
 
-    PROOT_LOGIN_OPTS="$PROOT_NAME --user $PROOT_USER $SD_BINDING --shared-tmp"
+    PROOT_LOGIN_OPTS="$PROOT_NAME "
+    PROOT_LOGIN_OPTS+="--user $PROOT_USER "
+    PROOT_LOGIN_OPTS+="$SD_BINDING "
+    PROOT_LOGIN_OPTS+="--shared-tmp "
+    PROOT_LOGIN_OPTS+="$PROOT_LOGIN_EXTRA_OPTS"
 
     proot-distro login $PROOT_LOGIN_OPTS
 fi
