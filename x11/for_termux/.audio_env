@@ -1,10 +1,10 @@
-export PULSE_SERVER=127.0.0.1
-
 export PULSEAUDIO_OPTS="module-native-protocol-tcp "
 export PULSEAUDIO_OPTS+="auth-ip-acl=127.0.0.1 auth-anonymous=1"
 
+export PULSE_SERVER=127.0.0.1
+
 export AUDIO_ENV_LOADED=1
 
-echo "Enabled PulseAudio environment."
-echo "You can now enable audio support for Termux:X11."
+echo "Loaded PulseAudio environment."
+echo "Start the audio server in Termux for audio playback in X11."
 echo ""

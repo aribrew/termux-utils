@@ -7,7 +7,6 @@ if ! [[ -d "$HOME/termux-utils" ]];
 then
     pkg update
 
-
     if [[ "$?" == "0" ]];
     then
         pkg install -y git

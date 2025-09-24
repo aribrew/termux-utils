@@ -29,12 +29,8 @@ then
 fi
 
 
+BASH_HELPERS_URL="https://tinyurl.com/aribrew-bash-helpers"
 TERMUX_UTILS_URL="https://github.com/aribrew/termux-utils.git"
-
-BASH_HELPERS_URL="https://gist.github.com/aribrew"
-BASH_HELPERS_URL+="/2d6dd4036716952a64691bc2cbfa2e5c/raw/"
-BASH_HELPERS_URL+="/b4408bf19273279a26729ac3e9a4bf988ab3b618/"
-BASH_HELPERS_URL+="/bash_helpers.sh"
 
 
 echo "=================================="
@@ -69,7 +65,7 @@ then
     CDIR=$PWD
     cd $TMPDIR
     
-    curl -LO $BASH_HELPERS_URL
+    curl -L $BASH_HELPERS_URL > "$USER_SCRIPTS/bash_helpers.sh"
 
     if ! [[ "$?" == "0" ]];
     then

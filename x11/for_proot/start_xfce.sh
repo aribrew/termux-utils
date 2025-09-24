@@ -1,8 +1,20 @@
 #!/bin/bash
 
+if [[ -f "$HOME/.audio_env" ]];
+then
+    source "$HOME/.audio_env"
+fi
+
+
+if [[ -f "$HOME/.x11_env" ]];
+then
+    source "$HOME/.x11_env"
+fi
+
+
 screen -dmS desktop startxfce4
 
-echo "XFCE4 should be available now."
+echo "XFCE4 desktop should be available now."
 echo "See 'desktop' screen for output."
 echo ""
 
