@@ -1,18 +1,19 @@
 #!/bin/bash
 
+SCRIPT_PATH=$(realpath $(dirname $0))
 
-abort()
-{
-    MESSAGE=$1
 
-    if ! [[ "$MESSAGE" == "" ]];
+if ! [[ -v BASH_HELPERS_LOADED ]];
+then
+    source bash_helpers.sh
+    
+    if ! [[ "$?" == "0" ]];
     then
-        echo "$MESSAGE"
-        echo ""
-    fi
+        "$SCRIPT_PATH/bash_helpers.sh" --install
 
-    exit 1
-}
+        source $("$SCRIPT_PATH/bash_helpers.sh" --path)
+    fi
+fi
 
 
 
@@ -29,7 +30,6 @@ then
 fi
 
 
-BASH_HELPERS_URL="https://tinyurl.com/aribrew-bash-helpers"
 TERMUX_UTILS_URL="https://github.com/aribrew/termux-utils.git"
 
 
@@ -38,8 +38,8 @@ echo "Performing a basic Termux setup..."
 echo "=================================="
 
 
-SCRIPT_PATH=$(realpath $(dirname $0))
 USER_SCRIPTS=$HOME/.local/bin
+
 
 if ! [[ -d "$USER_SCRIPTS" ]];
 then
@@ -58,27 +58,6 @@ then
     touch "$HOME/.environment"
     echo "source \$HOME/.environment" >> "$HOME/.bashrc"
 fi
-
-
-if ! [[ -f "$USER_SCRIPTS/bash_helpers.sh" ]];
-then
-    CDIR=$PWD
-    cd $TMPDIR
-    
-    curl -L $BASH_HELPERS_URL > "$USER_SCRIPTS/bash_helpers.sh"
-
-    if ! [[ "$?" == "0" ]];
-    then
-        abort "Failed downloading bash_helpers.sh. Aborting."
-    fi
-
-    mv bash_helpers.sh "$USER_SCRIPTS/"
-    chmod +x "$USER_SCRIPTS/bash_helpers.sh"
-fi
-
-
-export PATH=$USER_SCRIPTS:$PATH
-source bash_helpers.sh
 
 
 echo ""
