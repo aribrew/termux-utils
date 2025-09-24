@@ -1,5 +1,5 @@
-export XDG_RUNTIME_DIR=${TMPDIR}
 export DISPLAY=:0
+export XDG_RUNTIME_DIR=${TMPDIR}
 
 export X11_ENV_LOADED=1
 
