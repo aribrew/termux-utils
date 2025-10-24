@@ -163,7 +163,7 @@ then
 fi
 
 
-if ! [[ -f "$HOME/.ssh/.id_rsa" ]];
+if ! [[ -f "$HOME/.ssh/.id_ed25519" ]];
 then
     echo ""
     echo "Generating SSH keys for proot ..."
@@ -172,7 +172,7 @@ then
     echo "You can simply answer all questions with ENTER."
     echo ""
 
-    ssh-keygen -f $HOME/.ssh/.id_rsa
+    ssh-keygen -f $HOME/.ssh/.id_ed25519
 
     if ! [[ "$?" == "0" ]];
     then
@@ -183,7 +183,7 @@ then
 fi
 
 
-if [[ -f "$HOME/.ssh/.id_rsa" ]];
+if [[ -f "$HOME/.ssh/.id_ed25519" ]];
 then
     echo ""
     echo "Installing keys in proot ..."
@@ -192,8 +192,8 @@ then
     mkdir -p "$PROOT_PATH/root/.ssh"
     mkdir -p "$PROOT_PATH/puser/.ssh"
 
-    cat $HOME/.ssh/.id_rsa.pub >> $PROOT_PATH/root/.ssh/authorized_keys
-    cat $HOME/.ssh/.id_rsa.pub >> $PROOT_PATH/$PROOT_USER/.ssh/authorized_keys
+    cat $HOME/.ssh/.id_ed25519.pub >> $PROOT_PATH/root/.ssh/authorized_keys
+    cat $HOME/.ssh/.id_ed25519.pub >> $PROOT_PATH/$PROOT_USER/.ssh/authorized_keys
 fi
 
 
