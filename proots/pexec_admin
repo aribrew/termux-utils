@@ -2,6 +2,12 @@
 
 source bash_helpers.sh
 
+if ! [[ -v BASH_HELPERS_LOADED ]];
+then
+    echo -e "BASH helpers not found in PATH. Install it first.\n"
+    exit 1
+fi
+
 
 usage()
 {
@@ -23,7 +29,7 @@ then
 fi
 
 
-if [ "$1" == "-h" ] || [ "$1" == "--help" ];
+if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
 then
     usage
     abort

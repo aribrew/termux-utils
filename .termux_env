@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TERMUX_UTILS=$(realpath $(dirname ${BASH_SOURCE[0]}))
+TERMUX_UTILS=$(realpath $(dirname $0))
 
 
 export USER_SCRIPTS=$HOME/.local/bin
@@ -19,33 +19,63 @@ echo "Loaded tweaks for Termux environment, if any."
 echo ""
 
 
-if [[ -f "$PREFIX/bin/proot-distro" ]] && [[ -v ENABLE_PROOTS ]];
+if [[ -v ENABLE_PROOTS ]];
 then
-    source "$TERMUX_UTILS/proots/.proots_env"
+    if ! [[ -f "$PREFIX/bin/proot-distro" ]];
+    then
+        echo -e "Proots support is enabled, but proot-distro is missing."
+        echo -e "Please, run proots/setup.sh.\n"
+    else
+        source "$TERMUX_UTILS/proots/.proots_env"
+    fi
 fi
 
 
-if [[ -f "$PREFIX/bin/termux-x11" ]] && [[ -v ENABLE_X11 ]];
+if [[ -v ENABLE_X11 ]];
 then
-    source "$TERMUX_UTILS/x11/.x11_env"
+    if ! [[ -f "$PREFIX/bin/termux-x11" ]];
+    then
+        echo -e "X11 support is enabled, but termux-x11 is missing."
+        echo -e "Please, run x11/setup.sh.\n"
+    else
+        source "$TERMUX_UTILS/x11/.x11_env"
+    fi
 fi
 
 
-if [[ -f "$PREFIX/bin/pulseaudio" ]] && [[ -v ENABLE_AUDIO ]];
+if [[ -v ENABLE_AUDIO ]];
 then
-    source "$TERMUX_UTILS/x11/.audio_env"
+    if ! [[ -f "$PREFIX/bin/pulseaudio" ]];
+    then
+        echo -e "Audio support is enabled, but pulseaudio is missing."
+        echo -e "Please, run x11/setup_audio.sh.\n"
+    else
+        source "$TERMUX_UTILS/x11/.audio_env"
+    fi
 fi
 
 
-if [[ -f "$PREFIX/bin/fluidsynth" ]] && [[ -v ENABLE_MIDI ]];
+if [[ -v ENABLE_MIDI ]];
 then
-    source "$TERMUX_UTILS/x11/midi_support/.midi_env"
+    if ! [[ -f "$PREFIX/bin/fluidsynth" ]];
+    then
+        echo -e "MIDI support is enabled, but fluidsynth is missing."
+        echo -e "Please, run x11/setup_midi.sh.\n"
+    else
+        source "$TERMUX_UTILS/x11/midi_support/.midi_env"
+    fi
 fi
 
 
-if [[ -f "$PREFIX/bin/virgl_test_server_android" ]] && [[ -v ENABLE_3D ]];
+if [[ -v ENABLE_3D ]];
 then
-    source "$TERMUX_UTILS/x11/.3d_env"
+    if ! [[ -f "$PREFIX/bin/virgl_test_server_android" ]];
+    then
+        echo -e "3D support is enabled, but virgl is missing."
+        echo -e "Please, run x11/setup_virgl.sh.\n"
+    else
+        source "$TERMUX_UTILS/x11/.3d_env"
+    fi
 fi
 
 
