@@ -76,7 +76,7 @@ fi
 pkg upgrade -y
 
 
-BASIC_PACKAGES="termux-services git openssh micro screen which mandoc"
+BASIC_PACKAGES="termux-services git openssh micro screen which mandoc "
 BASIC_PACKAGES+="ranger libusb clang termux-api"
 
 
@@ -109,13 +109,10 @@ then
     done
 
     touch "$HOME/.ssh_password_set"
+
+    echo "To change it, simply run 'passwd'."
+    echo ""
 fi
-
-
-echo "To change it, simply run 'passwd'."
-echo ""
-
-sv-enable sshd
 
 
 if ! [[ -d "$HOME/termux-utils" ]];
@@ -146,11 +143,6 @@ then
 fi
 
 
-#cp "$SCRIPT_PATH/termux_files/.termux_env" $HOME/
-
-#echo "export PATH=$USER_SCRIPTS:\$PATH" >> "$HOME/.termux_env"
-
-#echo "source \$HOME/.termux_env" >> "$HOME/.environment"
 echo "source \"$SCRIPT_PATH/.termux_env\"" >> "$HOME/.environment"
 
 
