@@ -29,6 +29,7 @@ pkg update
 
 if ! [[ -f "$PREFIX/etc/apt/sources.list.d/tur.list" ]];
 then
+    echo ""
     echo "Installing Termux User Repository ..."
     echo "-------------------------------------"
     
@@ -38,6 +39,7 @@ fi
 
 if ! [[ -f "$PREFIX/etc/apt/sources.list.d/x11.list" ]];
 then
+    echo ""
     echo "Installing X11 repository ..."
     echo "-----------------------------"
 
@@ -47,6 +49,7 @@ fi
 
 if ! [[ -f "$PREFIX/bin/termux-x11" ]];
 then
+    echo ""
     echo "Installing Termux X11 server..."
     echo "-------------------------------"
 
