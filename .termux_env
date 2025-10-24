@@ -19,10 +19,29 @@ echo "Loaded tweaks for Termux environment, if any."
 echo ""
 
 
+ps -e | grep -q " sshd"
+
+if [[ "$?" == "0" ]]
+then
+    echo -e "Enabling SSH server..."
+
+    sv-enable sshd
+
+    if [[ "$?" == "0" ]];
+    then
+        echo -e "Done\n"
+    else
+        echo -e "Failed. Packages openssh and/or termux-services"
+        echo -e "may be missing.\n"
+    fi
+fi
+
+
 if [[ -v ENABLE_PROOTS ]];
 then
     if ! [[ -f "$PREFIX/bin/proot-distro" ]];
     then
+        echo ""
         echo -e "Proots support is enabled, but proot-distro is missing."
         echo -e "Please, install it first\n."
     else
@@ -35,6 +54,7 @@ if [[ -v ENABLE_X11 ]];
 then
     if ! [[ -f "$PREFIX/bin/termux-x11" ]];
     then
+        echo ""
         echo -e "X11 support is enabled, but termux-x11 is missing."
         echo -e "Please, run x11/for_termux/setup.sh.\n"
     else
@@ -47,6 +67,7 @@ if [[ -v ENABLE_AUDIO ]];
 then
     if ! [[ -f "$PREFIX/bin/pulseaudio" ]];
     then
+        echo ""
         echo -e "Audio support is enabled, but pulseaudio is missing."
         echo -e "Please, install it first.\n"
     else
@@ -59,6 +80,7 @@ if [[ -v ENABLE_MIDI ]];
 then
     if ! [[ -f "$PREFIX/bin/fluidsynth" ]];
     then
+        echo ""
         echo -e "MIDI support is enabled, but fluidsynth is missing."
         echo -e "Please, install it first.\n"
     else
@@ -71,6 +93,7 @@ if [[ -v ENABLE_3D ]];
 then
     if ! [[ -f "$PREFIX/bin/virgl_test_server_android" ]];
     then
+        echo ""
         echo -e "3D support is enabled, but virgl is missing."
         echo -e "Please, install it first.\n"
     else
