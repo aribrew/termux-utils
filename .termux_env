@@ -36,7 +36,7 @@ then
     if ! [[ -f "$PREFIX/bin/termux-x11" ]];
     then
         echo -e "X11 support is enabled, but termux-x11 is missing."
-        echo -e "Please, install it first.\n"
+        echo -e "Please, run x11/for_termux/setup.sh.\n"
     else
         source "$TERMUX_UTILS/x11/.x11_env"
     fi
@@ -98,4 +98,7 @@ echo "- export ENABLE_PROOTS=1"
 echo "- export ENABLE_X11=1"
 echo "- export ENABLE_MIDI=1"
 echo "- export ENABLE_3D=1"
+echo ""
+echo "If you have been told to install something for a module, all paths"
+echo "are relative to $TERMUX_UTILS."
 echo ""
