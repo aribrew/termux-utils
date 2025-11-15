@@ -1,4 +1,4 @@
-X11_SCRIPTS=$(realpath $(dirname ${BASH_SOURCE}))
+X11_SCRIPTS="$PREFIX/termux-utils/x11/for_termux"
 
 export DISPLAY=:0
 export XDG_RUNTIME_DIR=$TMPDIR
