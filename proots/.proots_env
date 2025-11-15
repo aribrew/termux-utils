@@ -1,10 +1,10 @@
 #!/bin/bash
 
-SCRIPT_HOME=$(realpath $(dirname ${BASH_SOURCE}))
+PROOTS_SCRIPTS=$(realpath $(dirname ${BASH_SOURCE}))
 
 
 export PROOTS="$PREFIX/var/lib/proot-distro/installed-rootfs"
-export PATH=$SCRIPT_HOME:$PATH
+export PATH=$PATH:$PROOTS_SCRIPTS
 
 export PROOTS_ENV_LOADED=1
 
