@@ -1,5 +1,9 @@
+X11_SCRIPTS=$(realpath $(dirname ${BASH_SOURCE}))
+
 export DISPLAY=:0
 export XDG_RUNTIME_DIR=$TMPDIR
+
+export PATH=$PATH:$X11_SCRIPTS
 
 export X11_ENV_LOADED=1
 
