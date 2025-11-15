@@ -58,7 +58,7 @@ then
         echo -e "X11 support is enabled, but termux-x11 is missing."
         echo -e "Please, run x11/for_termux/setup.sh.\n"
     else
-        source "$TERMUX_UTILS/x11/.x11_env"
+        source "$TERMUX_UTILS/x11/for_both/.x11_env"
     fi
 fi
 
