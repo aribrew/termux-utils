@@ -24,9 +24,9 @@ then
 fi
 
 
-if [[ -f "$HOME/.termux-setup_done" ]];
+if [[ -f "$HOME/.termux-utils_path" ]];
 then
-    abort "Termux setup has been already done."
+    abort "Termux utils setup was already completed."
 fi
 
 
@@ -160,5 +160,5 @@ echo "Restart Termux before continuing."
 echo ""
 
 
-touch $HOME/.termux-setup_done
+echo "$SCRIPT_PATH" > $HOME/.termux-utils_path
 
