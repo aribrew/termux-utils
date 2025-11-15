@@ -1,9 +1,11 @@
-X11_SCRIPTS="$PREFIX/termux-utils/x11/for_termux"
-
 export DISPLAY=:0
 export XDG_RUNTIME_DIR=$TMPDIR
 
-export PATH=$PATH:$X11_SCRIPTS
+if [[ -v TERMUX_VERSION ]];
+then
+    X11_SCRIPTS="$HOME/termux-utils/x11/for_termux"
+    export PATH=$PATH:$X11_SCRIPTS
+fi
 
 export X11_ENV_LOADED=1
 
