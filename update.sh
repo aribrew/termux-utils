@@ -8,7 +8,7 @@ echo -e "Updating Termux utils with repository...\n"
 
 git pull
 
-if [[ "$?" == "0" ]];
+if ! [[ "$?" == "0" ]];
 then
     echo -e "Failed. Check you have git installed."
     echo -e "Also, check your Internet connection."
