@@ -12,7 +12,7 @@ abort()
         echo ""
     fi
 
-    if [[ "${BASH_SOURCE}" == "" ]];
+    if [[ "$0" == "$SHELL" ]];
     then
         return 1
     else
@@ -67,6 +67,41 @@ ask_yn()
 }
 
 
+check_deps()
+{
+    PACKAGES="$1"
+    
+	DEPS=$(sudo apt-cache depends "$PACKAGES")
+	
+	REQUIRED_DEPS="$DEPS"
+	RECOMMENDED_DEPS="$DEPS"
+
+	echo "$REQUIRED_DEPS" | grep -q "  Depends:"
+
+	if [[ "$?" == "0" ]];
+	then
+	    DEPENDS_STR="Depends:"
+	    RECOMMENDED_STR="Recommends:"
+	else
+	    DEPENDS_STR="Depende:"
+	    RECOMMENDED_STR="Recomienda:"
+	fi
+	
+	REQUIRED_DEPS=$(echo "$REQUIRED_DEPS" | grep "  ${DEPENDS_STR}")
+	REQUIRED_DEPS=$(echo "$REQUIRED_DEPS" | sed "s/  ${DEPENDS_STR} //g")
+	REQUIRED_DEPS=$(echo "$REQUIRED_DEPS" | sed 's/<//g' | sed 's/>//g')
+
+	RECOMMENDED_DEPS=$(echo "$RECOMMENDED_DEPS" | grep "  ${RECOMMENDED_STR}")
+	RECOMMENDED_DEPS=$(echo "$RECOMMENDED_DEPS" | sed "s/  ${RECOMMENDED_STR} //g")
+	RECOMMENDED_DEPS=$(echo "$RECOMMENDED_DEPS" | sed 's/<//g' | 's/>//g')
+
+	ALL_DEPS="$REQUIRED_DEPS"
+	ALL_DEPS+="$RECOMMENDED_DEPS"
+
+    echo "$ALL_DEPS"
+}
+
+
 check_if_admin()
 {
     if [[ "$HOME" == "/root" ]];
@@ -87,6 +122,14 @@ check_port()
 }
 
 
+check_script()
+{
+	SCRIPT=$(realpath $0)
+
+	bash -n "$SCRIPT"
+}
+
+
 check_sudo()
 {
     if [[ "$EUID" == "0" ]];
@@ -95,6 +138,21 @@ check_sudo()
     else
         return 1
     fi
+}
+
+
+dir_empty()
+{
+	DIR_PATH="$1"
+
+	ITEMS=$(in_dir "$1")
+
+	if [[ "$ITEMS" == "0" ]];
+	then
+	    return 0
+	else
+	    return 1
+	fi
 }
 
 
@@ -145,6 +203,14 @@ filext()
     FILE_EXTENSION=${FILE_NAME##*.}
 
     echo .$FILE_EXTENSION
+}
+
+
+in_dir()
+{
+	DIR_PATH="$1"
+
+	echo $(ls "$DIR_PATH" | wc -l)
 }
 
 
@@ -236,6 +302,32 @@ pause()
 }
 
 
+same_file()
+{
+	FIRST_FILE="$1"
+	SECOND_FILE="$2"
+
+	if [[ "$FIRST_FILE" == "" ]] || [[ "$SECOND_FILE" == "" ]];
+	then
+        return -1
+        
+	elif ! [[ -f "$FIRST_FILE" ]] || ! [[ -f "$SECOND_FILE" ]];
+	then
+	    return -1
+	else
+        FIRST_MD5=$(md5sum "$FIRST_FILE" | cut -d ' ' -f 1)
+        SECOND_MD5=$(md5sum "$SECOND_FILE" | cut -d ' ' -f 1)
+
+        if [[ "$FIRST_MD5" == "$SECOND_MD5" ]];
+        then
+            return 0;
+        else
+            return 1;
+        fi
+	fi
+}
+
+
 test_ip()
 {
     IP_ADDRESS=$1
@@ -267,7 +359,7 @@ uppercase()
 }
 
 
-usage()
+helpers_usage()
 {
     echo "source bash_helpers.sh"
     echo ": Loads the functions in the current shell."
@@ -286,15 +378,6 @@ usage()
 }
 
 
-
-
-if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
-then
-    usage
-    abort
-fi
-
-
 if ! [[ -v ZSH_VERSION ]];
 then
     export -f abort
@@ -302,14 +385,18 @@ then
     export -f ask_yn
     export -f check_if_admin
     export -f check_port
+    export -f check_script
     export -f check_sudo
+    export -f dir_empty
     export -f exec_type
-    export -f is_newer
     export -f filext
+    export -f in_dir
+    export -f is_newer
     export -f lowercase
     export -f os_name
     export -f os_version
     export -f pause
+    export -f same_file
     export -f test_ip
     export -f uppercase
 fi
@@ -318,14 +405,13 @@ fi
 if ! [[ -v BASH_HELPERS_LOADED ]];
 then
     export BASH_HELPERS_LOADED=1
-    
-    echo -e "BASH helpers loaded.\n"
 fi
 
 
 if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
 then
-    usage
+    helpers_usage
+    abort
 
 elif [[ "$1" == "--cmds" ]];
 then
