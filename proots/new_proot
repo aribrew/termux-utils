@@ -98,7 +98,8 @@ proot_exists $PROOT_NAME -q
 
 if [[ "$?" == "0" ]];
 then
-    abort
+    echo "A proot named '$PROOT_NAME' already exists."
+    abort "See the help to personalize it."
 fi
 
 
