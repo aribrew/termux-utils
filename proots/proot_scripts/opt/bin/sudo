@@ -1,0 +1,4 @@
+#!/bin/bash
+
+CMDLINE=${@:1}
+$CMDLINE
