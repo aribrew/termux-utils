@@ -36,18 +36,12 @@ then
 fi
 
 
-if [[ -v PROOT_NAME ]];
+if ! [[ -v PROOT_NAME ]];
 then
-    CMDLINE=$*
-else
     PROOT_NAME=$1
     CMDLINE=${@:2}
-fi
-
-
-if ! [[ "$EXT_SD" == "" ]];
-then
-    SD_BINDING="--bind $EXT_SD:/mnt/extsd"
+else
+    CMDLINE=$*
 fi
 
 
@@ -56,8 +50,16 @@ proot_exists $PROOT_NAME -q
 
 if [[ "$?" == "0" ]];
 then
+    if ! [[ "$EXT_SD" == "" ]];
+    then
+        SD_BINDING="--bind $EXT_SD:/mnt/extsd"
+    fi
+
+    TERMUX_HOME_BINDING="--bind $HOME:/mnt/termux_home"
+
     PROOT_LOGIN_OPTS="$PROOT_NAME "
     PROOT_LOGIN_OPTS+="$SD_BINDING "
+    PROOT_LOGIN_OPTS+="$TERMUX_HOME_BINDING "
     PROOT_LOGIN_OPTS+="--shared-tmp "
     PROOT_LOGIN_OPTS+="$PROOT_LOGIN_EXTRA_OPTS "
     PROOT_LOGIN_OPTS+="-- $CMDLINE"

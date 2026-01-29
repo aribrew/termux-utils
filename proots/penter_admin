@@ -49,8 +49,11 @@ then
         SD_BINDING="--bind $EXT_SD:/mnt/extsd"
     fi
 
+    TERMUX_HOME_BINDING="--bind $HOME:/mnt/termux_home"
+
     PROOT_LOGIN_OPTS="$PROOT_NAME "
     PROOT_LOGIN_OPTS+="$SD_BINDING "
+    PROOT_LOGIN_OPTS+="$TERMUX_HOME_BINDING "
     PROOT_LOGIN_OPTS+="--shared-tmp "
     PROOT_LOGIN_OPTS+="$PROOT_LOGIN_EXTRA_OPTS"
 
