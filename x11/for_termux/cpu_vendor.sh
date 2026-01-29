@@ -10,7 +10,12 @@ then
 
     if [[ "$HARDWARE" == "" ]];
     then
-        echo "UNKNOWN"
+        if [[ -d "/proc/mtk_mali" ]];
+        then
+            echo "Mediatek"
+        else
+            echo "UNKNOWN"
+        fi
     else
         VENDOR=$(echo "$HARDWARE" | grep -m 1 "Hardware" | xargs)
         VENDOR=$(echo "$VENDOR" | cut -d ':' -f 2 | xargs)
