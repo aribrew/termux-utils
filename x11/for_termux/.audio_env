@@ -5,6 +5,6 @@ export PULSE_SERVER=127.0.0.1
 
 export AUDIO_ENV_LOADED=1
 
-echo "Loaded PulseAudio environment."
+echo "Loaded PulseAudio environment in Termux."
 echo "Start the audio server in Termux for audio playback in X11."
 echo ""

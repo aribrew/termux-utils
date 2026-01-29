@@ -12,3 +12,15 @@ export X11_ENV_LOADED=1
 echo "Loaded X11 environment."
 echo "You can now start a desktop or a X11 app."
 echo ""
+
+
+if [[ -f "$HOME/.3d_env" ]] && ! [[ -v DISABLE_3D ]];
+then
+    source "$HOME/.3d_env"
+fi
+
+
+if [[ -f "$HOME/.audio_env" ]] ! [[ -v DISABLE_AUDIO ]];
+then
+    source "$HOME/.audio_env"
+fi
