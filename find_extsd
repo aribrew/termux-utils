@@ -38,33 +38,31 @@ if ! [[ -d "$HOME/storage/external-1" ]];
 then
     echo ""
     echo "No external SD card detected."
-    echo "Skipping setting up extsd_id."
+    echo "If you have recently replaced the SD card,"
+    echo "please run termux-setup-storage again."
     echo ""
 
 else
-    if ! [[ -f "$HOME/.extsd_id" ]];
+    extsd_path=$(realpath "$HOME/storage/external-1")
+    extsd_id=${extsd_path:9:9}
+    echo $extsd_id > "$HOME/.extsd_id"
+    
+    EXTSD_PATH="/storage/${extsd_id}"
+    EXTSD_LINK="$HOME/storage/extsd"
+
+    if [[ -f "$EXTSD_LINK" ]];
     then
-        extsd_path=$(realpath "$HOME/storage/external-1")
-        extsd_id=${extsd_path:9:9}
-
-        echo $extsd_id > "$HOME/.extsd_id"
-
-        grep -q "EXT_SD" "$HOME/.environment"
-
-        EXTSD_PATH="/storage/${extsd_id}"
-
-        if ! [[ "$?" == "0" ]];
-        then
-            echo "export EXT_SD=\"${EXTSD_PATH}\"" >> "$HOME/.termux_env"
-        fi
-        
-        echo ""
-        echo "Added ~/.extsd_id file with the SD card ID."
-        echo "Also, an EXT_SD variable has been added to .environment with its"
-        echo "full path (more confortable that writing '/storage/external-1')."
-        echo ""
-        echo "Remember: New environment variables will be set after restarting"
-        echo "          Termux."
-        echo ""
+        rm "$EXTSD_LINK"
     fi
+
+    ln -s "$EXTSD_PATH" "$EXTSD_LINK"
+
+    echo ""
+    echo "Added ~/.extsd_id file with the SD card ID."
+    echo "Also, an ~/storage/extsd symlink has been created."
+    echo ""
+    echo "Remember that the ~/storage/external-1 one points to"
+    echo "Termux folder in the external sdcard, not to the"
+    echo "external sd card root."
+    echo ""
 fi
