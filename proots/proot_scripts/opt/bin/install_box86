@@ -1,0 +1,151 @@
+#!/bin/bash
+
+source bash_helpers.sh
+
+if ! [[ -v BASH_HELPERS_LOADED ]];
+then
+    echo -e "BASH helpers not found in PATH. Install it first.\n"
+    exit 1
+fi
+
+
+if [[ -v TERMUX_VERSION ]];
+then
+    abort "This script isn't for Termux."
+fi
+
+
+ARCH=$(uname -m)
+
+
+if ! [[ $ARCH == armv* ]] && ! [ "$ARCH" == "aarch64" ];
+then
+    abort "Box86 is intended for running x86 binaries in ARM platforms."
+fi
+
+
+if [[ -f "/usr/local/bin/box86" ]];
+then
+    abort "Box86 is already installed."
+fi
+
+
+if -v [[ $ANDROID_DATA ]];
+then
+    IN_ANDROID=1
+    BOX86_PACKAGE="box86-android"
+else
+    BOX86_PACKAGE="box86-generic-arm"
+fi
+
+
+BOX86_MAIN_URL="https://Pi-Apps-Coders.github.io/box86-debs/debian/"
+BOX86_MAIN_GPG_URL="https://pi-apps-coders.github.io/box86-debs/KEY.gpg"
+
+BOX86_ALT_URL="https://ryanfortner.github.io/box86-debs/"
+BOX86_ALT_GPG_URL="https://ryanfortner.github.io/box86-debs/KEY.gpg"
+
+
+if [[ -v BOX86_MAIN_URL_OK ]];
+then
+    BOX86_URL=$BOX86_MAIN_URL
+    BOX86_GPG_URL=$BOX86_MAIN_GPG_URL
+
+    echo "Using main Box86 repository."
+    echo ""
+
+else
+    BOX86_URL=$BOX86_ALT_URL
+    BOX86_GPG_URL=$BOX86_ALT_GPG_URL
+
+    echo "Using alternate Box86 repository."
+    echo ""
+fi
+
+
+if ! [ -f "/usr/share/keyrings/box86.gpg" ];
+then
+    if ! [ -d "/usr/share/keyrings" ];
+    then
+        sudo mkdir -p "/usr/share/keyrings"
+    fi
+
+    wget -qO- "$BOX86_GPG_URL" | \
+    sudo gpg --dearmor -o "/usr/share/keyrings/box86.gpg"
+
+    if ! [ "$?" == "0" ];
+    then
+        if [ -f "/usr/share/keyrings/box86.gpg" ];
+        then
+            sudo rm /usr/share/keyrings/box86.gpg
+        fi
+
+        abort "Could not intall Box86 GPG key."
+    fi
+
+    echo "Added GPG key to keyrings."
+fi
+
+
+if ! [ -f "/etc/apt/sources/list.d/box86.sources" ];
+then
+    echo "Types: deb" > /var/tmp/box86.sources
+
+    echo "URIs: $BOX86_URL" \
+    >> /var/tmp/box86.sources
+
+    echo "Suites: ./" >> /var/tmp/box86.sources
+    echo "Signed-By: /usr/share/keyrings/box86.gpg" \
+    >> /var/tmp/box86.sources
+
+    sudo mv /var/tmp/box86.sources /etc/apt/sources.list.d/
+
+    echo "Added sources list for APT."
+fi
+
+
+sudo dpkg --add-architecture armhf
+sudo dpkg --add-architecture i386
+
+echo ""
+echo "Enabled armhf and i386 architectures in dpkg"
+echo "if they were not enabled yet."
+
+
+echo ""
+echo "Refreshing available packages in APT..."
+echo "---------------------------------------"
+
+sudo apt update
+
+
+echo ""
+echo "Installing libc6 if wasn't yet ..."
+echo "----------------------------------"
+
+sudo apt install -y libc6:armhf
+
+echo ""
+
+if ! [ "$?" == "0" ];
+then
+    abort "Failed installing libc6."
+fi
+
+
+echo ""
+echo "Installing Box86 ..."
+echo "--------------------"
+
+sudo apt install -y ${BOX86_PACKAGE}
+
+echo ""
+
+if ! [ "$?" == "0" ];
+then
+    abort "Failed installing Box86."
+fi
+
+
+echo "Finished."
+echo ""

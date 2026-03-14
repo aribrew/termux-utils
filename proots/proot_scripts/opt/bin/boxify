@@ -1,0 +1,119 @@
+#!/bin/bash
+
+source bash_helpers.sh
+
+if ! [[ -v BASH_HELPERS_LOADED ]];
+then
+    echo -e "BASH helpers not found in PATH. Install it first.\n"
+    exit 1
+fi
+
+
+boxify_exec()
+{
+    EXEC=$1
+    LAUNCHER=$2
+    EXEC_FILENAME=$(basename $EXEC)
+    EXEC_PATH=$(dirname $EXEC)
+    SCRIPT_PATH=$EXEC
+    TRUE_EXEC=$(realpath $EXEC_PATH/${EXEC_FILENAME}_x86)
+
+    sudo touch "$EXEC_PATH/permission_test"
+
+    if ! [[ "$?" == "0" ]];
+    then
+        abort "You have not write permission in '$EXEC_PATH'."
+    fi
+
+    sudo rm "$EXEC_PATH/permission_test"
+
+
+    if [[ -f "$TRUE_EXEC" ]];
+    then
+        echo "ERROR: Failed boxifying '$EXEC'."
+        echo "A file '$TRUE_EXEC' already exists."
+        echo ""
+        abort
+    fi
+
+
+    sudo mv "$EXEC" "$TRUE_EXEC"    
+
+    echo "#!/bin/bash" > /var/tmp/boxified_executable
+    echo "" >> /var/tmp/boxified_executable
+    echo "$LAUNCHER $TRUE_EXEC \$*" >> /var/tmp/boxified_executable
+    echo "" >> /var/tmp/boxified_executable
+
+    sudo mv /var/tmp/boxified_executable "$SCRIPT_PATH"
+
+    chmod +x "$SCRIPT_PATH"
+
+
+    echo "'$EXEC' boxified with '$LAUNCHER'."
+    echo ""
+}
+
+
+usage()
+{
+    echo "Usage: boxify <executable file>"
+    echo ""
+    echo "Creates an script in the executable path with the same name"
+    echo "as the executable. The original executable is renamed"
+    echo "adding adding _x86 to its filename."
+    echo ""
+    echo "The script will run the executable calling Box86 or Box64,"
+    echo "depending of the executable architecture."
+    echo ""
+}
+
+
+if [[ -v TERMUX_VERSION ]];
+then
+    abort "This script isn't for Termux."
+fi
+
+
+if [[ "$1" == "" ]] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
+then
+    usage
+    abort
+fi
+
+
+
+
+EXEC=$1
+FILE_TYPE=$(file -L "$EXEC")
+
+echo ${FILE_TYPE} | grep "ELF 32-bit" > /dev/null
+LINUX_X86=$?
+
+echo ${FILE_TYPE} | grep "ELF 64-bit" > /dev/null
+LINUX_X64=$?
+
+
+if [[ "$LINUX_X86" == "0" ]];
+then
+    if ! [[ "/usr/local/bin/box86" ]];
+    then
+        echo "Box86 has not been detected."
+        echo "Can't boxify i386 executable."
+    else
+        boxify_exec "$EXEC" box86
+    fi
+
+elif [[ "$LINUX_X64" == "0" ]];
+then
+    if ! [[ "/usr/local/bin/box64" ]];
+    then
+        echo "Box64 has not been detected."
+        echo "Can't boxify amd64 executable."
+    else
+        boxify_exec "$EXEC" box64
+    fi
+
+else
+    abort "The file '${EXEC}' isn't an Linux x86 or x86_64 executable."    
+fi
+

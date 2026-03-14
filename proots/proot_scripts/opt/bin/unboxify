@@ -1,0 +1,65 @@
+#!/bin/bash
+
+source bash_helpers.sh
+
+if ! [[ -v BASH_HELPERS_LOADED ]];
+then
+    echo -e "BASH helpers not found in PATH. Install it first.\n"
+    exit 1
+fi
+
+
+usage()
+{
+    echo "Usage: unboxify <boxified executable>"
+    echo ""
+    echo "Restores a boxified executable deleting the Box86-64 script"
+    echo "and renaming the true executable with it original file name."
+    echo ""
+}
+
+
+if [[ -v TERMUX_VERSION ]];
+then
+    abort "This script isn't for Termux."
+fi
+
+
+if [[ "$1" == "" ]] || [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]];
+then
+    usage
+    exit 1
+fi
+
+
+
+
+BOXIFIED_EXEC=$1
+
+
+if ! [[ -f "$BOXIFIED_EXEC" ]];
+then
+    abort "The given file '$BOXIFIED_EXEC' does not exist."
+fi
+
+
+TRUE_EXEC="${BOXIFIED_EXEC}_x86"
+
+if ! [[ -f "$TRUE_EXEC" ]];
+then
+    abort "This isn't a boxified executable. Can't find '$TRUE_EXEC'."
+fi
+
+
+sudo rm $BOXIFIED_EXEC
+
+if ! [[ "$?" == "0" ]];
+then
+    abort "Cannot delete '$BOXIFIED_EXEC'. Check if you have permission."
+fi
+
+
+sudo mv "$TRUE_EXEC" "$BOXIFIED_EXEC"
+
+echo "Done."
+echo ""

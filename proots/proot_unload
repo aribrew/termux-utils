@@ -1,0 +1,6 @@
+#!/bin/bash
+
+unset PROOT_NAME
+unset PROOT_USER
+
+echo -e "Unloaded last proot environment.\n"

@@ -15,6 +15,8 @@ usage()
     echo ""
     echo "Enters into the given proot installation as the given username."
     echo "If a proot env is loaded, its config will be used."
+    echo "The proot name must be provided, in environment or by param."
+    echo "The default username, if none is provided, is 'puser'."
     echo ""
 }
 
@@ -34,10 +36,29 @@ then
 fi
 
 
+if [[ "$1" == "" ]] && ! [[ -v PROOT_NAME ]] && ! [[ -v PROOT_USER ]];
+then
+    usage
+    abort
+fi
+
+
+if ! [[ "$1" == "" ]];
+then
+    PROOT_NAME="$1"
+fi
+
+
+if ! [[ "$2" == "" ]];
+then
+    PROOT_USER="$2"
+fi
+
+
 if ! [[ -v PROOT_NAME ]];
 then
-    PROOT_NAME=$1
-    PROOT_USER=$2
+    usage
+    abort
 fi
 
 

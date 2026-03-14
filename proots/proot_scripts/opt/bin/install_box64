@@ -1,0 +1,130 @@
+#!/bin/bash
+
+source bash_helpers.sh
+
+if ! [[ -v BASH_HELPERS_LOADED ]];
+then
+    echo -e "BASH helpers not found in PATH. Install it first.\n"
+    exit 1
+fi
+
+
+if [[ -v TERMUX_VERSION ]];
+then
+    abort "This script isn't for Termux."
+fi
+
+
+ARCH=$(uname -m)
+
+
+if ! [[ "$ARCH" == "aarch64" ]];
+then
+    abort "Box64 is intended for running x86_64 binaries in ARM64 platforms."
+fi
+
+
+if [[ -f "/usr/local/bin/box64" ]];
+then
+    abort "Box64 is already installed."
+fi
+
+
+if -v [[ $ANDROID_DATA ]];
+then
+    IN_ANDROID=1
+    BOX64_PACKAGE="box64-android"
+else
+    BOX64_PACKAGE="box64-generic-arm"
+fi
+
+
+BOX64_MAIN_URL="https://Pi-Apps-Coders.github.io/box64-debs/debian/"
+BOX64_MAIN_GPG_URL="https://pi-apps-coders.github.io/box64-debs/KEY.gpg"
+
+BOX64_ALT_URL="https://ryanfortner.github.io/box64-debs/"
+BOX64_ALT_GPG_URL="https://ryanfortner.github.io/box64-debs/KEY.gpg"
+
+
+if [[ -v BOX86_MAIN_URL_OK ]];
+then
+    BOX64_URL=$BOX64_MAIN_URL
+    BOX64_GPG_URL=$BOX64_MAIN_GPG_URL
+
+    echo "Using main Box64 repository."
+    echo ""
+
+else
+    BOX64_URL=$BOX64_ALT_URL
+    BOX64_GPG_URL=$BOX64_ALT_GPG_URL
+
+    echo "Using second Box64 repository."
+    echo ""
+fi
+
+
+if ! [ -f "/usr/share/keyrings/box64.gpg" ];
+then
+    if ! [ -d "/usr/share/keyrings" ];
+    then
+        sudo mkdir -p "/usr/share/keyrings"
+    fi
+
+    wget -qO- "$BOX64_GPG_URL" | \
+    sudo gpg --dearmor -o "/usr/share/keyrings/box64.gpg"
+
+    if ! [ "$?" == "0" ];
+    then
+        if [ -f "/usr/share/keyrings/box64.gpg" ];
+        then
+            sudo rm /usr/share/keyrings/box64.gpg
+        fi
+
+        abort "Could not intall Box64 GPG key."
+    fi
+
+    echo "Added GPG key to keyrings."
+fi
+
+
+if ! [ -f "/etc/apt/sources/list.d/box64.sources" ];
+then
+    echo "Types: deb" > /var/tmp/box64.sources
+
+    echo "URIs: $BOX64_URL" \
+    >> /var/tmp/box64.sources
+
+    echo "Suites: ./" >> /var/tmp/box64.sources
+    echo "Signed-By: /usr/share/keyrings/box64.gpg" \
+    >> /var/tmp/box64.sources
+
+    sudo mv /var/tmp/box64.sources /etc/apt/sources.list.d/
+
+    echo "Added sources list for APT."
+fi
+
+
+echo ""
+echo "Refreshing available packages in APT..."
+echo "---------------------------------------"
+
+sudo apt update
+
+
+echo ""
+echo "Installing Box64 ..."
+echo "--------------------"
+
+sudo apt install -y ${BOX64_PACKAGE}
+
+echo ""
+
+if ! [ "$?" == "0" ];
+then
+    abort "Failed installing Box64."
+fi
+
+
+
+echo "Finished."
+echo ""

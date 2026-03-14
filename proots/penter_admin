@@ -15,6 +15,7 @@ usage()
     echo ""
     echo "Enters into the given proot installation as root."
     echo "If a proot env is loaded, its config will be used."
+    echo "The proot name must be provided, in environment or by param."
     echo ""
 }
 
@@ -34,16 +35,16 @@ then
 fi
 
 
+if ! [[ "$1" == "" ]];
+then
+    PROOT_NAME="$1"
+fi
+
+
 if ! [[ -v PROOT_NAME ]];
 then
-    if [[ "$1" == "" ]];
-    then
-        echo -e "No PROOT_NAME provided."
-        echo -e "And no proot name provided in cmdline."
-        abort
-    fi
-
-    PROOT_NAME=$1
+    usage
+    abort
 fi
 
 
