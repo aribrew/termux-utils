@@ -36,6 +36,13 @@ fi
 
 if ! [[ -v PROOT_NAME ]];
 then
+    if [[ "$1" == "" ]];
+    then
+        echo -e "No PROOT_NAME provided."
+        echo -e "And no proot name provided in cmdline."
+        abort
+    fi
+
     PROOT_NAME=$1
 fi
 
