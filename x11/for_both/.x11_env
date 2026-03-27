@@ -20,7 +20,7 @@ then
 fi
 
 
-if [[ -f "$HOME/.audio_env" ]] ! [[ -v DISABLE_AUDIO ]];
+if [[ -f "$HOME/.audio_env" ]] && ! [[ -v DISABLE_AUDIO ]];
 then
     source "$HOME/.audio_env"
 fi
