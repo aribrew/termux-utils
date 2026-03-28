@@ -19,9 +19,9 @@ echo "Loaded tweaks for Termux environment, if any."
 echo ""
 
 
-pgrep -x sshd
+PID=$(pgrep -x sshd)
 
-if [[ "$?" == "0" ]]
+if [[ "$PID" == "" ]]
 then
     echo -e "Enabling SSH server..."
 
