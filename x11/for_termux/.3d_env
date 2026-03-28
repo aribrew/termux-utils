@@ -1,0 +1,44 @@
+CPU_VENDOR=$(cpu_vendor.sh)
+
+if [[ "$CPU_VENDOR" == "Qualcomm" ]];
+then
+    echo -e "Qualcomm detected. Enabling Turnip driver."
+
+    GPU_DRIVER=turnip
+    
+elif [[ "$CPU_VENDOR" == "Mediatek" ]];
+then
+    echo -e "Mediatek detected. Enabling Zink driver."
+
+    GPU_DRIVER=zink
+    
+else
+    echo -e "Unknown CPU vendor. Falling back to Zink driver."
+
+    GPU_DRIVER=zink
+fi
+
+
+if [[ "$GPU_DRIVER" == "zink" ]];
+then
+    export MESA_LOADER_DRIVER_OVERRIDE=zink
+    export GALLIUM_DRIVER=zink
+    export ZINK_DESCRIPTORS=lazy
+
+    if [[ -v ZINK_COMPATIBILITY ]];
+    then
+        export MESA_NO_ERROR=1
+        export MESA_GL_VERSION_OVERRIDE=4.3COMPAT
+        export MESA_GLES_VERSION_OVERRIDE=3.2
+    fi
+    
+else
+
+fi
+
+
+export 3D_ENV_LOADED=1
+
+
+echo -e "\nHardware 3D acceleration environment loaded"
+echo -e "Try enabling 3D support now\n"
