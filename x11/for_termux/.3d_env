@@ -37,7 +37,7 @@ else
 fi
 
 
-export 3D_ENV_LOADED=1
+export HARDWARE_3D_ACCELERATION_ENV_LOADED=1
 
 
 echo -e "\nHardware 3D acceleration environment loaded"
