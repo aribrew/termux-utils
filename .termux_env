@@ -15,15 +15,14 @@ fi
 
 source "$HOME/.termux_env_tweaks"
 
-echo "Loaded tweaks for Termux environment, if any."
-echo ""
+echo -e "Loaded tweaks for Termux environment, if any.\n"
 
 
 PID=$(pgrep -x sshd)
 
 if [[ "$PID" == "" ]]
 then
-    echo -e "Enabling SSH server..."
+    echo -e "\nEnabling SSH server..."
 
     sv-enable sshd
 
@@ -41,8 +40,7 @@ if [[ -v ENABLE_PROOTS ]];
 then
     if ! [[ -f "$PREFIX/bin/proot-distro" ]];
     then
-        echo ""
-        echo -e "Proots support is enabled, but proot-distro is missing."
+        echo -e "\nProots support is enabled, but proot-distro is missing."
         echo -e "Please, install it first\n."
     else
         source "$TERMUX_UTILS/proots/.proots_env"
@@ -54,8 +52,7 @@ if [[ -v ENABLE_X11 ]];
 then
     if ! [[ -f "$PREFIX/bin/termux-x11" ]];
     then
-        echo ""
-        echo -e "X11 support is enabled, but termux-x11 is missing."
+        echo -e "\nX11 support is enabled, but termux-x11 is missing."
         echo -e "Please, run x11/for_termux/setup.sh.\n"
     else
         source "$TERMUX_UTILS/x11/for_both/.x11_env"
@@ -67,8 +64,7 @@ if [[ -v ENABLE_AUDIO ]];
 then
     if ! [[ -f "$PREFIX/bin/pulseaudio" ]];
     then
-        echo ""
-        echo -e "Audio support is enabled, but pulseaudio is missing."
+        echo -e "\nAudio support is enabled, but pulseaudio is missing."
         echo -e "Please, install it first.\n"
     else
         source "$TERMUX_UTILS/x11/.audio_env"
@@ -80,8 +76,7 @@ if [[ -v ENABLE_MIDI ]];
 then
     if ! [[ -f "$PREFIX/bin/fluidsynth" ]];
     then
-        echo ""
-        echo -e "MIDI support is enabled, but fluidsynth is missing."
+        echo -e "\nMIDI support is enabled, but fluidsynth is missing."
         echo -e "Please, install it first.\n"
     else
         source "$TERMUX_UTILS/x11/midi_support/.midi_env"
@@ -91,13 +86,24 @@ fi
 
 if [[ -v ENABLE_3D ]];
 then
-    if ! [[ -f "$PREFIX/bin/virgl_test_server_android" ]];
+    source "$TERMUX_UTILS/x11/for_termux/.3d_env"
+fi
+
+
+if [[ -v ENABLE_3D_FOR_PROOTS ]];
+then
+    if ! [[ -v ENABLE_3D ]];
     then
-        echo ""
-        echo -e "3D support is enabled, but virgl is missing."
-        echo -e "Please, install it first.\n"
+        echo -e "\n3D support for proots requested but not 3D support"
+        echo -e "was enabled. Please export ENABLE_3D=1 before\n"
     else
-        source "$TERMUX_UTILS/x11/for_termux/.3d_env"
+        if ! [[ -f "$PREFIX/bin/virgl_test_server_android" ]];
+        then
+            echo -e "\n3D support for proots requested, but virgl is missing."
+            echo -e "Please, install it first.\n"
+        else
+            enable_3d_support_for_proots.sh
+        fi
     fi
 fi
 
@@ -121,6 +127,7 @@ echo "export ENABLE_PROOTS=1"
 echo "export ENABLE_X11=1"
 echo "export ENABLE_MIDI=1"
 echo "export ENABLE_3D=1"
+echo "export ENABLE_3D_FOR_PROOTS=1"
 echo ""
 echo "If you have been told to install something for a module, all paths"
 echo "are relative to $TERMUX_UTILS."

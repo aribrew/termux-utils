@@ -16,5 +16,5 @@ fi
 
 virgl_test_server $VIRGL_OPTS &
 
-echo -e "3D acceleration should be enabled now.\n"
+echo -e "3D acceleration should be enabled now for proots.\n"
 

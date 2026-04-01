@@ -83,15 +83,6 @@ then
 fi
 
 
-#if ! [[ -f "$HOME/.proots_env" ]];
-#then
-#    cp "$SCRIPT_PATH/termux_files/.proots_env" $HOME/
-#    echo "source \"\$HOME/.proots_env\"" >> "$HOME/.environment"
-#
-#    source "$HOME/.proots_env"
-#fi
-
-
 PROOT_PATH="$PROOTS/$PROOT_NAME"
 
 proot_exists $PROOT_NAME -q
@@ -180,7 +171,7 @@ then
         abort "Failed generating SSH key."
     fi
 
-    cp "$SCRIPT_PATH/termux_files/.ssh/config" $HOME/.ssh/
+    cp "$SCRIPT_PATH/for_termux/.ssh/config" $HOME/.ssh/
 fi
 
 
@@ -198,7 +189,7 @@ then
 fi
 
 
-cp $SCRIPT_PATH/proot_scripts/* $PROOT_PATH/usr/bin/
+cp $SCRIPT_PATH/for_proot/* $PROOT_PATH/usr/bin/
 chmod -R +x $PROOT_PATH/usr/bin
 
 
