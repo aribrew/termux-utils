@@ -40,7 +40,7 @@ if [[ -v ENABLE_PROOTS ]];
 then
     if ! [[ -f "$PREFIX/bin/proot-distro" ]];
     then
-        echo -e "\nProots support is enabled, but proot-distro is missing."
+        echo -e "\nProot support is enabled, but proot-distro is missing."
         echo -e "Please, install it first\n."
     else
         source "$TERMUX_UTILS/proots/.proots_env"
@@ -86,6 +86,7 @@ fi
 
 if [[ -v ENABLE_3D ]];
 then
+    echo -e "\n3D acceleration enabled\n"
     source "$TERMUX_UTILS/x11/for_termux/.3d_env"
 fi
 
@@ -94,8 +95,8 @@ if [[ -v ENABLE_3D_FOR_PROOTS ]];
 then
     if ! [[ -v ENABLE_3D ]];
     then
-        echo -e "\n3D support for proots requested but not 3D support"
-        echo -e "was enabled. Please export ENABLE_3D=1 before\n"
+        echo -e "\n3D support for proots requested, but 3D acceleration"
+        echo -e "isn't enabled. Please export ENABLE_3D=1 before.\n"
     else
         if ! [[ -f "$PREFIX/bin/virgl_test_server_android" ]];
         then
