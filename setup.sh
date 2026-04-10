@@ -5,13 +5,13 @@ SCRIPT_PATH=$(realpath $(dirname $0))
 
 if ! [[ -v BASH_HELPERS_LOADED ]];
 then
-    source bash_helpers.sh
+    source bash_helpers
     
     if ! [[ "$?" == "0" ]];
     then
-        "$SCRIPT_PATH/bash_helpers.sh" --install
+        "$SCRIPT_PATH/bash_helpers" --install
 
-        source $("$SCRIPT_PATH/bash_helpers.sh" --path)
+        source $("$SCRIPT_PATH/bash_helpers" --path)
     fi
 fi
 
