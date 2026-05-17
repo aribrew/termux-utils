@@ -4,17 +4,23 @@ install_bash_helpers()
 {
 	BASH_HELPERS_URL="https://github.com/aribrew/bash_scripting"
 	BASH_HELPERS_URL+="/raw/refs/heads/main/bash_helpers"
-	        
+
+    CD="$PWD"
 	cd "$TMP"
+
+	echo -e "Installing BASH helpers..."
 	
-	curl -LO $BASH_HELPERS_URL
+	curl -LOs $BASH_HELPERS_URL
 
 	if [[ "$?" == "0" ]];
 	then
-	    chmod +x bash_helpers
-	    mv bash_helpers $PREFIX/opt/bin/
+	    chmod +x "$TMP/bash_helpers"
+	    mv "$TMP/bash_helpers" "$PREFIX/opt/bin/"
 	    
         echo -e "BASH helpers installed."
+	else
+        echo -e "Failed!"
+		exit 1
 	fi
 }
 
