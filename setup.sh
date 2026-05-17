@@ -1,6 +1,35 @@
 #!/bin/bash
 
+install_bash_helpers()
+{
+	BASH_HELPERS_URL="https://github.com/aribrew/bash_scripting"
+	BASH_HELPERS_URL+="/raw/refs/heads/main/bash_helpers"
+	        
+	cd "$TMP"
+	
+	curl -LO $BASH_HELPERS_URL
+
+	if [[ "$?" == "0" ]];
+	then
+	    chmod +x bash_helpers
+	    mv bash_helpers $PREFIX/opt/bin/
+	    
+        echo -e "BASH helpers installed."
+	fi
+}
+
+
+
+
 SCRIPT_PATH=$(realpath $(dirname $0))
+
+
+TMP="$HOME/tmp"
+
+if ! [[ -d "$TMP" ]];
+then
+    mkdir -p "$TMP"
+fi
 
 
 if ! [[ -v BASH_HELPERS_LOADED ]];
@@ -9,13 +38,14 @@ then
     
     if ! [[ "$?" == "0" ]];
     then
-        "$SCRIPT_PATH/bash_helpers" --install
+        install_bash_helpers
 
-        source $("$SCRIPT_PATH/bash_helpers" --path)
+        if [[ -f "$PREFIX/opt/bin/bash_helpers" ]];
+        then
+            source "$PREFIX/opt/bin/bash_helpers"
+        fi
     fi
 fi
-
-
 
 
 if ! [[ -v TERMUX_VERSION ]];
@@ -38,7 +68,7 @@ echo "Performing a basic Termux setup..."
 echo "=================================="
 
 
-USER_SCRIPTS=$HOME/.local/bin
+USER_SCRIPTS=$PREFIX/opt/bin
 
 
 if ! [[ -d "$USER_SCRIPTS" ]];
