@@ -1,10 +1,9 @@
 #!/bin/bash
 
 export TERMUX_UTILS=$(realpath $(dirname ${BASH_SOURCE}))
-
-
 export USER_SCRIPTS=$PREFIX/opt/bin
-export PATH=$USER_SCRIPTS:$PATH
+
+export PATH=$USER_SCRIPTS:$TERMUX_UTILS:$PATH
 
 
 # These will affect the loading of some things.
