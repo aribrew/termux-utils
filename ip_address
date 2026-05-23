@@ -1,4 +1,4 @@
 #!/bin/bash
 
 ALL_IPS=$(ifconfig 2>/dev/null | grep inet)
-echo $ALL_IPS | tail -1 | xargs | cut -d ' ' -f 2
+echo "$ALL_IPS" | tail -1 | xargs | cut -d ' ' -f 2
