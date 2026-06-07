@@ -1,10 +1,13 @@
 #!/bin/bash
 
 export TERMUX_UTILS=$(realpath $(dirname ${BASH_SOURCE}))
+
+export USR_BIN=$PREFIX/opt/usr/bin
 export USER_SCRIPTS=$PREFIX/opt/bin
 
-export PATH=$USER_SCRIPTS:$TERMUX_UTILS:$PATH
-
+export PATH=$USR_BIN:$PATH
+export PATH=$USER_SCRIPTS:$PATH
+export PATH=$TERMUX_UTILS:$PATH
 
 # These will affect the loading of some things.
 if ! [[ -f "$HOME/.termux_env_tweaks" ]];
